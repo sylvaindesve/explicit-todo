@@ -21,6 +21,9 @@ export class ConsoleClient extends Vorpal {
     this
       .command("events", "Dump all events")
       .action(this.dumpEvents);
+    this
+      .command("repository", "Dump repository")
+      .action(this.dumpRepository);
   }
 
   private createListAction: Vorpal.Action = async (args: Vorpal.Args) => {
@@ -42,5 +45,12 @@ export class ConsoleClient extends Vorpal {
         return dm.toString() + ":" + JSON.stringify(dm.payload);
       }),
     ).subscribe((s) => { this.log(s); });
+  }
+
+  private dumpRepository: Vorpal.Action = async (args: Vorpal.Args) => {
+    const lists = await this._todoApp.getTodoListRepository().findAll();
+    lists.forEach((l) => {
+      this.log(JSON.stringify(l));
+    });
   }
 }

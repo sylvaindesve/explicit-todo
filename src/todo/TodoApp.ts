@@ -11,26 +11,32 @@ import { Identity } from "ts-eventsourcing/ValueObject/Identity";
 import { TodoListCommandHandler } from "./command/TodoListCommandHandler";
 import { TodoList } from "./domain/TodoList";
 import { TodoListId } from "./domain/TodoListId";
+import { TodoListProjector } from "./query/TodoListProjector";
+import { TodoListReadModelRepository } from "./query/TodoListReadModelRepository";
 
 export class TodoApp {
 
   private _commandBus: CommandBus;
   private _eventBus: DomainEventBus;
   private _eventStore: EventStore<Identity>;
-  private _todoListRepository: EventSourcingRepositoryInterface<TodoList, TodoListId>;
+  private _todoListEventSourcingRepository: EventSourcingRepositoryInterface<TodoList, TodoListId>;
   private _todoListCommandHandler: TodoListCommandHandler;
+  private _todoListRepository: TodoListReadModelRepository;
 
-  constructor(eventStore: EventStore<Identity>) {
+  constructor(eventStore: EventStore<Identity>, todoListRepository: TodoListReadModelRepository) {
     this._eventStore = eventStore;
+    this._todoListRepository = todoListRepository;
+
     this._commandBus = new SimpleCommandBus();
     this._eventBus = new AsynchronousDomainEventBus();
-    this._todoListRepository = new EventSourcingRepository<TodoList, TodoListId>(
+    this._todoListEventSourcingRepository = new EventSourcingRepository<TodoList, TodoListId>(
       this._eventStore,
       this._eventBus,
       new SimpleEventSourcedAggregateFactory(TodoList),
     );
-    this._todoListCommandHandler = new TodoListCommandHandler(this._todoListRepository);
+    this._todoListCommandHandler = new TodoListCommandHandler(this._todoListEventSourcingRepository);
     this._commandBus.subscribe(this._todoListCommandHandler);
+    this._eventBus.subscribe(new TodoListProjector(this._todoListRepository));
   }
 
   public getCommandBus(): CommandBus {
@@ -45,7 +51,11 @@ export class TodoApp {
     return this._eventStore;
   }
 
-  public getTodoListRepository(): EventSourcingRepositoryInterface<TodoList, TodoListId> {
+  public getTodoListEventSourcingRepository(): EventSourcingRepositoryInterface<TodoList, TodoListId> {
+    return this._todoListEventSourcingRepository;
+  }
+
+  public getTodoListRepository(): TodoListReadModelRepository {
     return this._todoListRepository;
   }
 
