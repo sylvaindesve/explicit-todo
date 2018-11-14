@@ -4,6 +4,8 @@ import Vorpal = require("vorpal");
 import { CreateTodoList } from "../../todo/command/CreateTodoList";
 import { Notification } from "../../todo/command/Notification";
 import { TodoListId } from "../../todo/domain/TodoListId";
+import { GetAllTodoLists } from "../../todo/query/GetAllTodoLists";
+import { TodoListReadModel } from "../../todo/read/TodoListReadModel";
 import { TodoApp } from "../../todo/TodoApp";
 
 export class ConsoleClient extends Vorpal {
@@ -16,6 +18,9 @@ export class ConsoleClient extends Vorpal {
     this
       .delimiter("todo>");
     this
+      .command("show", "Show lists.")
+      .action(this.showListAction);
+    this
       .command("create <name>", "Create a new todo list.")
       .action(this.createListAction);
     this
@@ -24,6 +29,15 @@ export class ConsoleClient extends Vorpal {
     this
       .command("repository", "Dump repository")
       .action(this.dumpRepository);
+  }
+
+  private showListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    const lists = await this._todoApp
+      .getQueryBus()
+      .dispatch(new GetAllTodoLists());
+    (lists as TodoListReadModel[]).forEach((l) => {
+      this.log(`> ${l.name}`);
+    });
   }
 
   private createListAction: Vorpal.Action = async (args: Vorpal.Args) => {

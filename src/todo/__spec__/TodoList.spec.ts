@@ -12,6 +12,8 @@ import { TodoListNameChanged } from "../domain/event/TodoListNameChanged";
 import { TodoItemStatus } from "../domain/TodoItemStatus";
 import { TodoList } from "../domain/TodoList";
 import { TodoListId } from "../domain/TodoListId";
+import { TodoListProjector } from "../read/TodoListProjector";
+import { TodoListReadModel } from "../read/TodoListReadModel";
 
 describe("TodoList scenario", () => {
 
@@ -109,4 +111,26 @@ describe("TodoList scenario", () => {
         expect(list.getItems()[1].getStatus()).toEqual(TodoItemStatus.TODO);
       });
   });
+
+  test("Projecting TodoListReadModel", async () => {
+    const id = TodoListId.create();
+    const expectedModel = new TodoListReadModel(id);
+    expectedModel.name = "List name";
+
+    await EventSourcingTestBench
+    .create()
+    .givenEventListener((testBench) => {
+      return new TodoListProjector(testBench.getReadModelRepository(TodoListReadModel));
+    })
+    .whenEventsHappened(id, [
+      new TodoListCreated(),
+      new TodoListNameChanged("List name"),
+    ])
+    .thenModelsShouldMatch([
+      expectedModel,
+    ]);
+  });
+
+  // TODO Test GetAllTodoLists query : see https://gitlab.com/epinxteren/ts-eventsourcing/issues/7
+
 });
