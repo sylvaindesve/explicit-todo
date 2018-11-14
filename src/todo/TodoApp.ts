@@ -11,8 +11,8 @@ import { Identity } from "ts-eventsourcing/ValueObject/Identity";
 import { TodoListCommandHandler } from "./command/TodoListCommandHandler";
 import { TodoList } from "./domain/TodoList";
 import { TodoListId } from "./domain/TodoListId";
-import { TodoListProjector } from "./query/TodoListProjector";
-import { TodoListReadModelRepository } from "./query/TodoListReadModelRepository";
+import { TodoListProjector } from "./read/TodoListProjector";
+import { TodoListReadModelRepository } from "./read/TodoListReadModelRepository";
 
 export class TodoApp {
 

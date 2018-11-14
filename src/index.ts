@@ -1,7 +1,7 @@
 import { InMemoryEventStore } from "ts-eventsourcing/EventStore/InMemoryEventStore";
 import { InMemoryRepository } from "ts-eventsourcing/ReadModel/InMemoryRepository";
 import { ConsoleClient } from "./client/console/ConsoleClient";
-import { TodoListReadModel } from "./todo/query/TodoListReadModel";
+import { TodoListReadModel } from "./todo/read/TodoListReadModel";
 import { TodoApp } from "./todo/TodoApp";
 
 const app = new TodoApp(
