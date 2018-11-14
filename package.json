@@ -4,6 +4,7 @@
   "description": "Learning Domain Driven Design, Command Query Responsibility Segregation and Event Sourcing with a simple Todo application.",
   "author": "Sylvain Desvé <sylvain.desve@gmail.com>",
   "license": "GPL-3.0-or-later",
+  "repository": "github:sylvaindesve/explicit-todo",
   "main": "dist/index.js",
   "scripts": {
     "compile": "tsc",
