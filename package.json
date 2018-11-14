@@ -1,0 +1,24 @@
+{
+  "name": "explicit-todo",
+  "version": "0.0.1",
+  "description": "Learning Domain Driven Design, Command Query Responsibility Segregation and Event Sourcing with a simple Todo application.",
+  "author": "Sylvain Desvé <sylvain.desve@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "main": "dist/index.js",
+  "scripts": {
+    "compile": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "jest": "^23.6.0",
+    "jest-html-reporter": "^2.4.2",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "ts-eventsourcing": "^1.1.13"
+  }
+}
