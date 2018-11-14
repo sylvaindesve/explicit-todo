@@ -1,8 +1,10 @@
+import { Answers, Question } from "inquirer";
 import { map } from "rxjs/operators";
 import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import Vorpal = require("vorpal");
 import { CreateTodoList } from "../../todo/command/CreateTodoList";
 import { Notification } from "../../todo/command/Notification";
+import { RenameTodoList } from "../../todo/command/RenameTodoList";
 import { TodoListId } from "../../todo/domain/TodoListId";
 import { GetAllTodoLists } from "../../todo/query/GetAllTodoLists";
 import { TodoListReadModel } from "../../todo/read/TodoListReadModel";
@@ -23,6 +25,9 @@ export class ConsoleClient extends Vorpal {
     this
       .command("create <name>", "Create a new todo list.")
       .action(this.createListAction);
+    this
+      .command("rename", "Rename a todo list.")
+      .action(this.renameListAction);
     this
       .command("events", "Dump all events")
       .action(this.dumpEvents);
@@ -50,6 +55,43 @@ export class ConsoleClient extends Vorpal {
     } else {
       this.log(`Got errors: ${Array.from(not.getErrors().values()).join(", ")}`);
     }
+  }
+
+  private renameListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+
+    const lists = await this._todoApp
+      .getQueryBus()
+      .dispatch(new GetAllTodoLists()) as TodoListReadModel[];
+    const listChoices = lists.map((l) => {
+      return { name: l.name, value: l.id.toString() };
+    });
+
+    if (listChoices && listChoices.length !== 0) {
+      const whichListQuestion: Question<Answers> = {
+        choices: listChoices,
+        message: "Choose list to rename:",
+        name: "selectedList",
+        type: "list",
+      };
+      const newNameQuestion: Question<Answers> = {
+        message: "New name?",
+        name: "newName",
+        type: "input",
+      };
+      await this.activeCommand.prompt([whichListQuestion, newNameQuestion]).then(async (answers: Answers) => {
+        const idList = answers.selectedList;
+        const newName = answers.newName;
+        const not: Notification = await this._todoApp
+          .getCommandBus()
+          .dispatch(new RenameTodoList(idList, newName));
+        if (!not.hasErrors()) {
+          this.log(`Renamed list`);
+        } else {
+          this.log(`Got errors: ${Array.from(not.getErrors().values()).join(", ")}`);
+        }
+      });
+    }
+
   }
 
   private dumpEvents: Vorpal.Action = async (args: Vorpal.Args) => {

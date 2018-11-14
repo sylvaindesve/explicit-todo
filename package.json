@@ -13,6 +13,7 @@
     "test": "jest"
   },
   "devDependencies": {
+    "@types/inquirer": "0.0.43",
     "@types/jest": "^23.3.9",
     "@types/vorpal": "^1.11.0",
     "jest": "^23.6.0",
