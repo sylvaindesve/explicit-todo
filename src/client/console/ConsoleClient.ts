@@ -1,6 +1,7 @@
 import { Answers, Question } from "inquirer";
 import { map } from "rxjs/operators";
 import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
+import { ReplayService } from "ts-eventsourcing/ReplayService";
 import Vorpal = require("vorpal");
 import { CreateTodoList } from "../../todo/command/CreateTodoList";
 import { Notification } from "../../todo/command/Notification";
@@ -34,6 +35,9 @@ export class ConsoleClient extends Vorpal {
     this
       .command("repository", "Dump repository")
       .action(this.dumpRepository);
+    this
+      .command("replay", "Replay events")
+      .action(this.replay);
   }
 
   private showListAction: Vorpal.Action = async (args: Vorpal.Args) => {
@@ -109,4 +113,13 @@ export class ConsoleClient extends Vorpal {
       this.log(JSON.stringify(l));
     });
   }
+
+  private replay: Vorpal.Action = async (args: Vorpal.Args) => {
+    const replayService = new ReplayService(
+      this._todoApp.getEventStore(),
+      this._todoApp.getEventBus(),
+    );
+    replayService.replay();
+  }
+
 }
