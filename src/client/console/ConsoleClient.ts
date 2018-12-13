@@ -1,6 +1,7 @@
 import { Answers, Question } from "inquirer";
+import { Observable } from "rxjs";
+import { toArray } from "rxjs/operators";
 import { map } from "rxjs/operators";
-import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import { ReplayService } from "ts-eventsourcing/ReplayService";
 import Vorpal = require("vorpal");
 import { CreateTodoList } from "../../todo/command/CreateTodoList";
@@ -63,9 +64,10 @@ export class ConsoleClient extends Vorpal {
 
   private renameListAction: Vorpal.Action = async (args: Vorpal.Args) => {
 
-    const lists = await this._todoApp
+    const lists$ = await this._todoApp
       .getQueryBus()
-      .dispatch(new GetAllTodoLists()) as TodoListReadModel[];
+      .dispatch(new GetAllTodoLists()) as Observable<TodoListReadModel>;
+    const lists = await lists$.pipe(toArray()).toPromise();
     const listChoices = lists.map((l) => {
       return { name: l.name, value: l.id.toString() };
     });
