@@ -49,7 +49,7 @@ describe("TodoList scenario", () => {
       .givenCommandHandler((testBench: EventSourcingTestBench) => {
         return new TodoListCommandHandler(testBench.getAggregateRepository(TodoList));
       })
-      .given(id, TodoList, [
+      .givenEvents(id, TodoList, [
         new TodoListCreated(),
         new TodoListNameChanged("New todo list"),
       ])
@@ -68,7 +68,7 @@ describe("TodoList scenario", () => {
       .givenCommandHandler((testBench: EventSourcingTestBench) => {
         return new TodoListCommandHandler(testBench.getAggregateRepository(TodoList));
       })
-      .given(id, TodoList, [
+      .givenEvents(id, TodoList, [
         new TodoListCreated(),
         new TodoListNameChanged("New todo list"),
       ])
@@ -91,7 +91,7 @@ describe("TodoList scenario", () => {
       .givenCommandHandler((testBench: EventSourcingTestBench) => {
         return new TodoListCommandHandler(testBench.getAggregateRepository(TodoList));
       })
-      .given(id, TodoList, [
+      .givenEvents(id, TodoList, [
         new TodoListCreated(),
         new TodoListNameChanged("New todo list"),
         new TodoItemAdded(idItem1.toString(), "Item 1"),
