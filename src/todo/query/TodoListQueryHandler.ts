@@ -1,3 +1,4 @@
+import { Observable } from "rxjs";
 import { HandleQuery } from "ts-eventsourcing/QueryHandling/HandleQuery";
 import { QueryHandler } from "ts-eventsourcing/QueryHandling/QueryHandler";
 import { TodoListReadModel } from "../read/TodoListReadModel";
@@ -11,8 +12,8 @@ export class TodoListQueryHandler implements QueryHandler {
   ) {}
 
   @HandleQuery
-  public async getAllTodoLists(query: GetAllTodoLists): Promise<TodoListReadModel[]> {
-    return await this.repository.findAll();
+  public getAllTodoLists(query: GetAllTodoLists): Observable<TodoListReadModel> {
+    return this.repository.findAll();
   }
 
 }
