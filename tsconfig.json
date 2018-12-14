@@ -14,7 +14,7 @@
       "*": [
         "node_modules/*"
       ],
-      "todo/**/*": ["todo/**/*"]
+      "todo/*": ["todo/*"]
     }
   },
   "include": [

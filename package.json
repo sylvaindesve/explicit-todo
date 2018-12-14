@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rm -Rf dist",
     "compile": "tsc",
-    "start": "node dist/index.js",
+    "start": "ts-node -r tsconfig-paths/register src/index.ts",
     "lint": "tslint -c tslint.json \"src/**/*.ts\"",
     "lint:fix": "tslint --fix -c tslint.json \"src/**/*.ts\"",
     "test": "jest"
@@ -21,6 +21,8 @@
     "jest": "^23.6.0",
     "jest-html-reporter": "^2.4.2",
     "ts-jest": "^23.10.4",
+    "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.7.0",
     "tslint": "^5.11.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.1.6"
