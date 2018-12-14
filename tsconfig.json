@@ -7,13 +7,14 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
       "*": [
         "node_modules/*"
-      ]
+      ],
+      "todo/**/*": ["todo/**/*"]
     }
   },
   "include": [

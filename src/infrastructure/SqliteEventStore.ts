@@ -1,6 +1,7 @@
 import { from, Observable } from "rxjs";
 import { flatMap, map, mergeAll } from "rxjs/operators";
 import { Database, open } from "sqlite";
+import { TodoListCreated, TodoListNameChanged } from "todo/domain/event";
 import { ClassUtil } from "ts-eventsourcing/ClassUtil";
 import { DomainEvent } from "ts-eventsourcing/Domain/DomainEvent";
 import { DomainEventStream } from "ts-eventsourcing/Domain/DomainEventStream";
@@ -8,8 +9,6 @@ import { DomainMessage } from "ts-eventsourcing/Domain/DomainMessage";
 import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import { Identity } from "ts-eventsourcing/ValueObject/Identity";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
-import { TodoListCreated } from "../todo/domain/event/TodoListCreated";
-import { TodoListNameChanged } from "../todo/domain/event/TodoListNameChanged";
 
 export class SqliteEventStore<Id extends Identity = Identity> implements EventStore<Id> {
 
