@@ -1,14 +1,14 @@
-import { from, Observable } from "rxjs";
-import { flatMap, map, mergeAll } from "rxjs/operators";
-import { Database, open } from "sqlite";
-import { TodoListCreated, TodoListNameChanged } from "todo/domain/event";
-import { ClassUtil } from "ts-eventsourcing/ClassUtil";
-import { DomainEvent } from "ts-eventsourcing/Domain/DomainEvent";
-import { DomainEventStream } from "ts-eventsourcing/Domain/DomainEventStream";
-import { DomainMessage } from "ts-eventsourcing/Domain/DomainMessage";
-import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
-import { Identity } from "ts-eventsourcing/ValueObject/Identity";
-import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
+import { from, Observable } from 'rxjs';
+import { flatMap, map, mergeAll } from 'rxjs/operators';
+import { Database, open } from 'sqlite';
+import { TodoListCreated, TodoListNameChanged } from 'todo/domain/event';
+import { ClassUtil } from 'ts-eventsourcing/ClassUtil';
+import { DomainEvent } from 'ts-eventsourcing/Domain/DomainEvent';
+import { DomainEventStream } from 'ts-eventsourcing/Domain/DomainEventStream';
+import { DomainMessage } from 'ts-eventsourcing/Domain/DomainMessage';
+import { EventStore } from 'ts-eventsourcing/EventStore/EventStore';
+import { Identity } from 'ts-eventsourcing/ValueObject/Identity';
+import { UuidIdentity } from 'ts-eventsourcing/ValueObject/UuidIdentity';
 
 export class SqliteEventStore<Id extends Identity = Identity> implements EventStore<Id> {
 
@@ -30,7 +30,7 @@ export class SqliteEventStore<Id extends Identity = Identity> implements EventSt
   }
 
   public loadAll(): DomainEventStream {
-    return this.getEvents("SELECT * FROM events");
+    return this.getEvents('SELECT * FROM events');
   }
 
   public loadFromPlayhead(id: Id, playhead: number): DomainEventStream {
@@ -87,9 +87,9 @@ export class SqliteEventStore<Id extends Identity = Identity> implements EventSt
   private parseDomainEvent(eventType: string, payload: string): DomainEvent {
     const payloadAsObject: any = JSON.parse(payload);
     switch (eventType) {
-      case "TodoListCreated":
+      case 'TodoListCreated':
         return new TodoListCreated();
-      case "TodoListNameChanged":
+      case 'TodoListNameChanged':
         return new TodoListNameChanged(payloadAsObject.name);
       default:
         throw new Error(`Unknown event type ${eventType}`);

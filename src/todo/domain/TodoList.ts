@@ -1,13 +1,13 @@
-import { AggregateHandleEvent } from "ts-eventsourcing/EventSourcing/AggregateHandleEvent";
-import { EventSourcedAggregateRoot } from "ts-eventsourcing/EventSourcing/EventSourcedAggregateRoot";
-import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
-import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
-import { TodoItemAdded, TodoItemDone, TodoListCreated, TodoListNameChanged } from "./event";
-import { TodoItem } from "./TodoItem";
-import { TodoItemDescription } from "./TodoItemDescription";
-import { TodoItemId } from "./TodoItemId";
-import { TodoListId } from "./TodoListId";
-import { TodoListName } from "./TodoListName";
+import { AggregateHandleEvent } from 'ts-eventsourcing/EventSourcing/AggregateHandleEvent';
+import { EventSourcedAggregateRoot } from 'ts-eventsourcing/EventSourcing/EventSourcedAggregateRoot';
+import { EventSourcedEntity } from 'ts-eventsourcing/EventSourcing/EventSourcedEntity';
+import { UuidIdentity } from 'ts-eventsourcing/ValueObject/UuidIdentity';
+import { TodoItemAdded, TodoItemDone, TodoListCreated, TodoListNameChanged } from './event';
+import { TodoItem } from './TodoItem';
+import { TodoItemDescription } from './TodoItemDescription';
+import { TodoItemId } from './TodoItemId';
+import { TodoListId } from './TodoListId';
+import { TodoListName } from './TodoListName';
 
 export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
 
@@ -17,7 +17,7 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
     return newTodoList;
   }
 
-  private _name: TodoListName = new TodoListName("");
+  private _name: TodoListName = new TodoListName('');
   private _items: TodoItem[] = [];
 
   public getName(): TodoListName {

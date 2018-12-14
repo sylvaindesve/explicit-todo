@@ -1,19 +1,19 @@
-import { CommandBus } from "ts-eventsourcing/CommandHandling/CommandBus";
-import { SimpleCommandBus } from "ts-eventsourcing/CommandHandling/SimpleCommandBus";
-import { DomainEventBus } from "ts-eventsourcing/EventHandling/DomainEventBus";
-import { AsynchronousDomainEventBus } from "ts-eventsourcing/EventHandling/DomainEventBus/AsynchronousDomainEventBus";
-import { EventSourcingRepositoryInterface } from "ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface";
+import { CommandBus } from 'ts-eventsourcing/CommandHandling/CommandBus';
+import { SimpleCommandBus } from 'ts-eventsourcing/CommandHandling/SimpleCommandBus';
+import { DomainEventBus } from 'ts-eventsourcing/EventHandling/DomainEventBus';
+import { AsynchronousDomainEventBus } from 'ts-eventsourcing/EventHandling/DomainEventBus/AsynchronousDomainEventBus';
+import { EventSourcingRepositoryInterface } from 'ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface';
 // tslint:disable-next-line:max-line-length
-import { SimpleEventSourcedAggregateFactory } from "ts-eventsourcing/EventSourcing/Factory/SimpleEventSourcedAggregateFactory";
-import { EventSourcingRepository } from "ts-eventsourcing/EventSourcing/Repository/EventSourcingRepository";
-import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
-import { QueryBus } from "ts-eventsourcing/QueryHandling/QueryBus";
-import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
-import { Identity } from "ts-eventsourcing/ValueObject/Identity";
-import { TodoListCommandHandler } from "./command";
-import { TodoList, TodoListId } from "./domain";
-import { TodoListQueryHandler } from "./query";
-import { TodoListProjector, TodoListReadModelRepository } from "./read";
+import { SimpleEventSourcedAggregateFactory } from 'ts-eventsourcing/EventSourcing/Factory/SimpleEventSourcedAggregateFactory';
+import { EventSourcingRepository } from 'ts-eventsourcing/EventSourcing/Repository/EventSourcingRepository';
+import { EventStore } from 'ts-eventsourcing/EventStore/EventStore';
+import { QueryBus } from 'ts-eventsourcing/QueryHandling/QueryBus';
+import { SimpleQueryBus } from 'ts-eventsourcing/QueryHandling/SimpleQueryBus';
+import { Identity } from 'ts-eventsourcing/ValueObject/Identity';
+import { TodoListCommandHandler } from './command';
+import { TodoList, TodoListId } from './domain';
+import { TodoListQueryHandler } from './query';
+import { TodoListProjector, TodoListReadModelRepository } from './read';
 
 export class TodoApp {
 

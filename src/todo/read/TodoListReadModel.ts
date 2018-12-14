@@ -1,9 +1,9 @@
-import { ReadModel } from "ts-eventsourcing/ReadModel/ReadModel";
-import { TodoListId } from "../domain/TodoListId";
+import { ReadModel } from 'ts-eventsourcing/ReadModel/ReadModel';
+import { TodoListId } from '../domain/TodoListId';
 
 export class TodoListReadModel implements ReadModel<TodoListId> {
 
-  public name: string = "";
+  public name: string = '';
 
   constructor(
     public readonly id: TodoListId,

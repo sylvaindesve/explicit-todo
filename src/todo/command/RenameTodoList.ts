@@ -1,4 +1,4 @@
-import { Command } from "ts-eventsourcing/CommandHandling/Command";
+import { Command } from 'ts-eventsourcing/CommandHandling/Command';
 
 export class RenameTodoList implements Command {
 

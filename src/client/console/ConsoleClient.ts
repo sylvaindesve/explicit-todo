@@ -1,14 +1,14 @@
-import { Answers, Question } from "inquirer";
-import { Observable } from "rxjs";
-import { toArray } from "rxjs/operators";
-import { map } from "rxjs/operators";
-import { CreateTodoList, Notification, RenameTodoList } from "todo/command";
-import { TodoListId } from "todo/domain";
-import { GetAllTodoLists } from "todo/query";
-import { TodoListReadModel } from "todo/read";
-import { TodoApp } from "todo/TodoApp";
-import { ReplayService } from "ts-eventsourcing/ReplayService";
-import Vorpal = require("vorpal");
+import { Answers, Question } from 'inquirer';
+import { Observable } from 'rxjs';
+import { toArray } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
+import { CreateTodoList, Notification, RenameTodoList } from 'todo/command';
+import { TodoListId } from 'todo/domain';
+import { GetAllTodoLists } from 'todo/query';
+import { TodoListReadModel } from 'todo/read';
+import { TodoApp } from 'todo/TodoApp';
+import { ReplayService } from 'ts-eventsourcing/ReplayService';
+import Vorpal = require('vorpal');
 
 export class ConsoleClient extends Vorpal {
 
@@ -18,24 +18,24 @@ export class ConsoleClient extends Vorpal {
     super();
     this._todoApp = todoApp;
     this
-      .delimiter("todo>");
+      .delimiter('todo>');
     this
-      .command("show", "Show lists.")
+      .command('show', 'Show lists.')
       .action(this.showListAction);
     this
-      .command("create <name>", "Create a new todo list.")
+      .command('create <name>', 'Create a new todo list.')
       .action(this.createListAction);
     this
-      .command("rename", "Rename a todo list.")
+      .command('rename', 'Rename a todo list.')
       .action(this.renameListAction);
     this
-      .command("events", "Dump all events")
+      .command('events', 'Dump all events')
       .action(this.dumpEvents);
     this
-      .command("repository", "Dump repository")
+      .command('repository', 'Dump repository')
       .action(this.dumpRepository);
     this
-      .command("replay", "Replay events")
+      .command('replay', 'Replay events')
       .action(this.replay);
   }
 
@@ -56,7 +56,7 @@ export class ConsoleClient extends Vorpal {
     if (!not.hasErrors()) {
       this.log(`Created list ${name}`);
     } else {
-      this.log(`Got errors: ${Array.from(not.getErrors().values()).join(", ")}`);
+      this.log(`Got errors: ${Array.from(not.getErrors().values()).join(', ')}`);
     }
   }
 
@@ -73,14 +73,14 @@ export class ConsoleClient extends Vorpal {
     if (listChoices && listChoices.length !== 0) {
       const whichListQuestion: Question<Answers> = {
         choices: listChoices,
-        message: "Choose list to rename:",
-        name: "selectedList",
-        type: "list",
+        message: 'Choose list to rename:',
+        name: 'selectedList',
+        type: 'list',
       };
       const newNameQuestion: Question<Answers> = {
-        message: "New name?",
-        name: "newName",
-        type: "input",
+        message: 'New name?',
+        name: 'newName',
+        type: 'input',
       };
       await this.activeCommand.prompt([whichListQuestion, newNameQuestion]).then(async (answers: Answers) => {
         const idList = answers.selectedList;
@@ -91,7 +91,7 @@ export class ConsoleClient extends Vorpal {
         if (!not.hasErrors()) {
           this.log(`Renamed list`);
         } else {
-          this.log(`Got errors: ${Array.from(not.getErrors().values()).join(", ")}`);
+          this.log(`Got errors: ${Array.from(not.getErrors().values()).join(', ')}`);
         }
       });
     }
@@ -102,7 +102,7 @@ export class ConsoleClient extends Vorpal {
     const stream = await this._todoApp.getEventStore().loadAll();
     stream.pipe(
       map((dm) => {
-        return dm.toString() + ":" + JSON.stringify(dm.payload);
+        return dm.toString() + ':' + JSON.stringify(dm.payload);
       }),
     ).subscribe((s) => { this.log(s); });
   }

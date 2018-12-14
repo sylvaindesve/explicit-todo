@@ -1,16 +1,18 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-      "interface-name": ["never-prefix"],
-      "variable-name": [
-        true,
-        "allow-leading-underscore",
-        "ban-keywords"
-      ]
-    },
-    "rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-eslint-rules"
+  ],
+  "jsRules": {},
+  "rules": {
+    "interface-name": ["never-prefix"],
+    "quotemark": [true, "single", "avoid-escape"],
+    "variable-name": [
+      true,
+      "allow-leading-underscore",
+      "ban-keywords"
+    ]
+  },
+  "rulesDirectory": []
 }

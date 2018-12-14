@@ -1,4 +1,4 @@
-import { ValueObject } from "../ValueObject";
+import { ValueObject } from '../ValueObject';
 
 export class TodoListName implements ValueObject<TodoListName> {
 

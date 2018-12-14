@@ -1,16 +1,16 @@
-import { CommandHandler } from "ts-eventsourcing/CommandHandling/CommandHandler";
-import { HandleCommand } from "ts-eventsourcing/CommandHandling/HandleCommand";
-import { EventSourcingRepositoryInterface } from "ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface";
-import { TodoItemDescription } from "../domain/TodoItemDescription";
-import { TodoItemId } from "../domain/TodoItemId";
-import { TodoList } from "../domain/TodoList";
-import { TodoListId } from "../domain/TodoListId";
-import { TodoListName } from "../domain/TodoListName";
-import {AddItemToTodoList } from "./AddItemToTodoList";
-import { CreateTodoList } from "./CreateTodoList";
-import { MarkItemDone } from "./MarkItemDone";
-import { Notification } from "./Notification";
-import { RenameTodoList } from "./RenameTodoList";
+import { CommandHandler } from 'ts-eventsourcing/CommandHandling/CommandHandler';
+import { HandleCommand } from 'ts-eventsourcing/CommandHandling/HandleCommand';
+import { EventSourcingRepositoryInterface } from 'ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface';
+import { TodoItemDescription } from '../domain/TodoItemDescription';
+import { TodoItemId } from '../domain/TodoItemId';
+import { TodoList } from '../domain/TodoList';
+import { TodoListId } from '../domain/TodoListId';
+import { TodoListName } from '../domain/TodoListName';
+import {AddItemToTodoList } from './AddItemToTodoList';
+import { CreateTodoList } from './CreateTodoList';
+import { MarkItemDone } from './MarkItemDone';
+import { Notification } from './Notification';
+import { RenameTodoList } from './RenameTodoList';
 
 export class TodoListCommandHandler implements CommandHandler {
 
@@ -99,7 +99,7 @@ export class TodoListCommandHandler implements CommandHandler {
     try {
       todoListId = new TodoListId(id);
     } catch (e) {
-      notification.addError("id", "Not a valid todo list ID");
+      notification.addError('id', 'Not a valid todo list ID');
     }
     return todoListId;
   }
@@ -109,32 +109,32 @@ export class TodoListCommandHandler implements CommandHandler {
     try {
       todoListId = new TodoItemId(idItem);
     } catch (e) {
-      notification.addError("itemId", "Not a valid todo item ID");
+      notification.addError('itemId', 'Not a valid todo item ID');
     }
     return todoListId;
   }
 
   private async validateTodoListExists(id: TodoListId, notification: Notification): Promise<void> {
     if (await !this._repository.has(id)) {
-      notification.addError("id", `Todo list with ID ${id} does not exist.`);
+      notification.addError('id', `Todo list with ID ${id} does not exist.`);
     }
   }
 
   private validateTodoListName(name: string, notification: Notification): void {
     if (name.length === 0) {
-      notification.addError("name", "Name must not be empty.");
+      notification.addError('name', 'Name must not be empty.');
     }
     if (name.length > 100) {
-      notification.addError("name", "Name must not be longer than 100 characters.");
+      notification.addError('name', 'Name must not be longer than 100 characters.');
     }
   }
 
   private validateTodoItemDescription(description: string, notification: Notification): void {
     if (description.length === 0) {
-      notification.addError("description", "Description must not be empty.");
+      notification.addError('description', 'Description must not be empty.');
     }
     if (description.length > 100) {
-      notification.addError("description", "Description must not be longer than 100 characters.");
+      notification.addError('description', 'Description must not be longer than 100 characters.');
     }
   }
 

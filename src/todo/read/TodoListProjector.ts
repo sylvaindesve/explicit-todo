@@ -1,11 +1,11 @@
-import { DomainMessage } from "ts-eventsourcing/Domain/DomainMessage";
-import { HandleDomainEvent } from "ts-eventsourcing/EventHandling/HandleDomainEvent";
-import { Projector } from "ts-eventsourcing/ReadModel/Projector";
-import { Repository } from "ts-eventsourcing/ReadModel/Repository";
-import { TodoListCreated } from "../domain/event/TodoListCreated";
-import { TodoListNameChanged } from "../domain/event/TodoListNameChanged";
-import { TodoListId } from "../domain/TodoListId";
-import { TodoListReadModel } from "./TodoListReadModel";
+import { DomainMessage } from 'ts-eventsourcing/Domain/DomainMessage';
+import { HandleDomainEvent } from 'ts-eventsourcing/EventHandling/HandleDomainEvent';
+import { Projector } from 'ts-eventsourcing/ReadModel/Projector';
+import { Repository } from 'ts-eventsourcing/ReadModel/Repository';
+import { TodoListCreated } from '../domain/event/TodoListCreated';
+import { TodoListNameChanged } from '../domain/event/TodoListNameChanged';
+import { TodoListId } from '../domain/TodoListId';
+import { TodoListReadModel } from './TodoListReadModel';
 
 export class TodoListProjector implements Projector {
 
