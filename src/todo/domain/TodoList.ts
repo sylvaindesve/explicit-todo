@@ -2,10 +2,7 @@ import { AggregateHandleEvent } from "ts-eventsourcing/EventSourcing/AggregateHa
 import { EventSourcedAggregateRoot } from "ts-eventsourcing/EventSourcing/EventSourcedAggregateRoot";
 import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
-import { TodoItemAdded } from "./event/TodoItemAdded";
-import { TodoItemDone } from "./event/TodoItemDone";
-import { TodoListCreated } from "./event/TodoListCreated";
-import { TodoListNameChanged } from "./event/TodoListNameChanged";
+import { TodoItemAdded, TodoItemDone, TodoListCreated, TodoListNameChanged } from "./event";
 import { TodoItem } from "./TodoItem";
 import { TodoItemDescription } from "./TodoItemDescription";
 import { TodoItemId } from "./TodoItemId";

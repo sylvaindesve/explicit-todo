@@ -10,12 +10,10 @@ import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import { QueryBus } from "ts-eventsourcing/QueryHandling/QueryBus";
 import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
 import { Identity } from "ts-eventsourcing/ValueObject/Identity";
-import { TodoListCommandHandler } from "./command/TodoListCommandHandler";
-import { TodoList } from "./domain/TodoList";
-import { TodoListId } from "./domain/TodoListId";
-import { TodoListQueryHandler } from "./query/TodoListQueryHandler";
-import { TodoListProjector } from "./read/TodoListProjector";
-import { TodoListReadModelRepository } from "./read/TodoListReadModelRepository";
+import { TodoListCommandHandler } from "./command";
+import { TodoList, TodoListId } from "./domain";
+import { TodoListQueryHandler } from "./query";
+import { TodoListProjector, TodoListReadModelRepository } from "./read";
 
 export class TodoApp {
 

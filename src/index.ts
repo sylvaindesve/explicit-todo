@@ -1,4 +1,3 @@
-import { InMemoryEventStore } from "ts-eventsourcing/EventStore/InMemoryEventStore";
 import { InMemoryRepository } from "ts-eventsourcing/ReadModel/InMemoryRepository";
 import { ConsoleClient } from "./client/console/ConsoleClient";
 import { SqliteEventStore } from "./infrastructure/SqliteEventStore";

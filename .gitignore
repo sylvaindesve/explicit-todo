@@ -2,3 +2,4 @@ database.sqlite
 dist
 node_modules
 test-report.html
+*.backup

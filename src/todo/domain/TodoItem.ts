@@ -1,6 +1,6 @@
 import { AggregateHandleEvent } from "ts-eventsourcing/EventSourcing/AggregateHandleEvent";
 import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
-import { TodoItemDone } from "./event/TodoItemDone";
+import { TodoItemDone } from "./event";
 import { TodoItemDescription } from "./TodoItemDescription";
 import { TodoItemId } from "./TodoItemId";
 import { TodoItemStatus } from "./TodoItemStatus";
