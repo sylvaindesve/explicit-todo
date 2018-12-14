@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { toArray } from 'rxjs/operators';
 import { EventSourcingTestBench } from 'ts-eventsourcing/Testing/EventSourcingTestBench';
 import { UuidIdentity } from 'ts-eventsourcing/ValueObject/UuidIdentity';
 import { AddItemToTodoList } from '../command/AddItemToTodoList';
@@ -12,6 +14,7 @@ import { TodoListNameChanged } from '../domain/event/TodoListNameChanged';
 import { TodoItemStatus } from '../domain/TodoItemStatus';
 import { TodoList } from '../domain/TodoList';
 import { TodoListId } from '../domain/TodoListId';
+import { GetAllTodoLists, TodoListQueryHandler } from '../query';
 import { TodoListProjector } from '../read/TodoListProjector';
 import { TodoListReadModel } from '../read/TodoListReadModel';
 
@@ -131,6 +134,28 @@ describe('TodoList scenario', () => {
     ]);
   });
 
-  // TODO Test GetAllTodoLists query : see https://gitlab.com/epinxteren/ts-eventsourcing/issues/7
+  test('Getting all lists', async () => {
+    const id = TodoListId.create();
+    const expectedModel = new TodoListReadModel(id);
+    expectedModel.name = 'List name';
+
+    await EventSourcingTestBench
+    .create()
+    .givenEventListener((testBench) => {
+      return new TodoListProjector(testBench.getReadModelRepository(TodoListReadModel));
+    })
+    .givenQueryHandler((testBench) => {
+      return new TodoListQueryHandler(testBench.getReadModelRepository(TodoListReadModel));
+    })
+    .whenEventsHappened(id, [
+      new TodoListCreated(),
+      new TodoListNameChanged('List name'),
+    ])
+    .thenAssert(async (testBench: EventSourcingTestBench) => {
+      const result$: Observable<TodoListReadModel> = await testBench.queryBus.dispatch(new GetAllTodoLists());
+      const models = await result$.pipe(toArray()).toPromise();
+      expect(models[0]).toEqual(expectedModel);
+    });
+  });
 
 });
