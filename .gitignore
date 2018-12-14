@@ -1,5 +1,5 @@
-database.sqlite
+backup
+data
 dist
 node_modules
 test-report.html
-*.backup

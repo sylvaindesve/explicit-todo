@@ -1,11 +1,12 @@
+import { FileEventStore } from 'ts-eventsourcing/EventStore/FileEventStore';
 import { InMemoryRepository } from 'ts-eventsourcing/ReadModel/InMemoryRepository';
 import { ConsoleClient } from './client/console/ConsoleClient';
-import { SqliteEventStore } from './infrastructure/SqliteEventStore';
+import { todoAppSerializer } from './infrastructure/todoAppSerializer';
 import { TodoListReadModel } from './todo/read/TodoListReadModel';
 import { TodoApp } from './todo/TodoApp';
 
 const app = new TodoApp(
-  new SqliteEventStore('./database.sqlite'),
+  FileEventStore.fromFile('./data/event-store', todoAppSerializer),
   new InMemoryRepository<TodoListReadModel>(),
 );
 
