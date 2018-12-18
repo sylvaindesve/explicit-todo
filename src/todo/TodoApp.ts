@@ -15,6 +15,12 @@ import { TodoList, TodoListId } from './domain';
 import { TodoListQueryHandler } from './query';
 import { TodoListProjector, TodoListReadModelRepository } from './read';
 
+export interface TodoAppOptions {
+  commandBus?: CommandBus;
+  queryBus?: QueryBus;
+  eventBus?: DomainEventBus;
+}
+
 export class TodoApp {
 
   private _commandBus: CommandBus;
@@ -29,13 +35,32 @@ export class TodoApp {
   private _eventStore: EventStore<Identity>;
   private _todoListEventSourcingRepository: EventSourcingRepositoryInterface<TodoList, TodoListId>;
 
-  constructor(eventStore: EventStore<Identity>, todoListRepository: TodoListReadModelRepository) {
+  constructor(
+      eventStore: EventStore<Identity>,
+      todoListRepository: TodoListReadModelRepository,
+      options?: TodoAppOptions) {
+
     this._eventStore = eventStore;
     this._todoListRepository = todoListRepository;
 
-    this._commandBus = new SimpleCommandBus();
-    this._queryBus = new SimpleQueryBus();
-    this._eventBus = new AsynchronousDomainEventBus();
+    if (options && options.commandBus) {
+      this._commandBus = options.commandBus;
+    } else {
+      this._commandBus = new SimpleCommandBus();
+    }
+
+    if (options && options.queryBus) {
+      this._queryBus = options.queryBus;
+    } else {
+      this._queryBus = new SimpleQueryBus();
+    }
+
+    if (options && options.eventBus) {
+      this._eventBus = options.eventBus;
+    } else {
+      this._eventBus = new AsynchronousDomainEventBus();
+    }
+
     this._todoListEventSourcingRepository = new EventSourcingRepository<TodoList, TodoListId>(
       this._eventStore,
       this._eventBus,
