@@ -7,6 +7,7 @@ import { TodoList } from "../domain/TodoList";
 import { TodoListId } from "../domain/TodoListId";
 import { TodoListName } from "../domain/TodoListName";
 import { AddItemToTodoList } from "./AddItemToTodoList";
+import { ArchiveTodoList } from "./ArchiveTodoList";
 import { CreateTodoList } from "./CreateTodoList";
 import { MarkItemDone } from "./MarkItemDone";
 import { Notification } from "./Notification";
@@ -30,8 +31,8 @@ export class TodoListCommandHandler implements CommandHandler {
 
     if (id && !not.hasErrors()) {
       const todoList = TodoList.create(id);
-      todoList.setName(new TodoListName(command.name)),
-        await this._repository.save(todoList);
+      todoList.setName(new TodoListName(command.name));
+      await this._repository.save(todoList);
     }
 
     return not;
@@ -51,8 +52,28 @@ export class TodoListCommandHandler implements CommandHandler {
 
     if (id && !not.hasErrors()) {
       const todoList = await this._repository.load(id);
-      todoList.setName(new TodoListName(command.name)),
-        await this._repository.save(todoList);
+      todoList.setName(new TodoListName(command.name));
+      await this._repository.save(todoList);
+    }
+
+    return not;
+  }
+
+  @HandleCommand
+  public async handleArchiveTodoList(
+    command: ArchiveTodoList
+  ): Promise<Notification> {
+    const not = new Notification();
+    const id = this.validateTodoListId(command.id, not);
+
+    if (id) {
+      this.validateTodoListExists(id, not);
+    }
+
+    if (id && !not.hasErrors()) {
+      const todoList = await this._repository.load(id);
+      todoList.archive();
+      await this._repository.save(todoList);
     }
 
     return not;
@@ -84,7 +105,7 @@ export class TodoListCommandHandler implements CommandHandler {
   public async handleMarkItemDone(command: MarkItemDone) {
     const not = new Notification();
     const id = this.validateTodoListId(command.id, not);
-    const itemId = this.validateTodoListId(command.itemId, not);
+    const itemId = this.validateTodoItemId(command.itemId, not);
 
     if (id) {
       this.validateTodoListExists(id, not);

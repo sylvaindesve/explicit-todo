@@ -9,6 +9,7 @@ import {
   Notification,
   RenameTodoList
 } from "todo/command";
+import { ArchiveTodoList } from "todo/command/ArchiveTodoList";
 import { TodoItemId, TodoListId } from "todo/domain";
 import { GetAllTodoLists } from "todo/query";
 import { TodoListReadModel } from "todo/read";
@@ -54,6 +55,10 @@ export class ConsoleClient extends Vorpal {
       "goto <name>",
       "Go to todo list"
     ).action(this.gotoListAction);
+    this._contextualCommands.archiveList = this.command(
+      "archive <name>",
+      "Archive the todo list"
+    ).action(this.archiveListAction);
     this._contextualCommands.createList = this.command(
       "create <name>",
       "Create a new todo list."
@@ -106,6 +111,27 @@ export class ConsoleClient extends Vorpal {
       ).action(this.markTodoItemDoneAction);
     } else {
       this.log(`Error: unknown list ${args.name}`);
+    }
+  };
+
+  private archiveListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    const lists$ = (await this._todoApp
+      .getQueryBus()
+      .dispatch(new GetAllTodoLists())) as Observable<TodoListReadModel>;
+    const lists = await lists$.pipe(toArray()).toPromise();
+    const targetList = lists.find(l => l.name === args.name);
+
+    if (targetList) {
+      const not: Notification = await this._todoApp
+        .getCommandBus()
+        .dispatch(new ArchiveTodoList(targetList.getId().toString()));
+      if (!not.hasErrors()) {
+        this.log(`Archived list ${args.name}`);
+      } else {
+        this.log(
+          `Got errors: ${Array.from(not.getErrors().values()).join(", ")}`
+        );
+      }
     }
   };
 

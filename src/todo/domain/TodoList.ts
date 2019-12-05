@@ -8,6 +8,7 @@ import {
   TodoListCreated,
   TodoListNameChanged
 } from "./event";
+import { TodoListArchived } from "./event/TodoListArchived";
 import { TodoItem } from "./TodoItem";
 import { TodoItemDescription } from "./TodoItemDescription";
 import { TodoItemId } from "./TodoItemId";
@@ -23,6 +24,7 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
 
   private _name: TodoListName = new TodoListName("");
   private _items: TodoItem[] = [];
+  private _isArchived: boolean = false;
 
   public getName(): TodoListName {
     return this._name;
@@ -46,6 +48,14 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
     return this._items;
   }
 
+  public isArchived(): boolean {
+    return this._isArchived;
+  }
+
+  public archive(): void {
+    this.apply(new TodoListArchived());
+  }
+
   protected getChildEntities(): Array<EventSourcedEntity<any>> {
     return this._items;
   }
@@ -64,5 +74,10 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
         new TodoItemDescription(event.description)
       )
     );
+  }
+
+  @AggregateHandleEvent
+  protected applyArchived(_event: TodoListArchived) {
+    this._isArchived = true;
   }
 }

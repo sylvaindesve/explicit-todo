@@ -2,6 +2,7 @@ import { TodoItemId, TodoListId } from "todo/domain";
 import {
   TodoItemAdded,
   TodoItemDone,
+  TodoListArchived,
   TodoListCreated,
   TodoListNameChanged
 } from "todo/domain/event";
@@ -34,6 +35,7 @@ const classHandlers: any[] = createClassHandlers({
   TodoItemAdded,
   TodoItemDone,
   TodoItemId,
+  TodoListArchived,
   TodoListCreated,
   TodoListNameChanged
 });
