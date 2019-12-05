@@ -1,10 +1,12 @@
 import { SimpleCommandBus } from "ts-eventsourcing/CommandHandling/SimpleCommandBus";
+import { AsynchronousDomainEventBus } from "ts-eventsourcing/EventHandling/DomainEventBus/AsynchronousDomainEventBus";
 import { FileEventStore } from "ts-eventsourcing/EventStore/FileEventStore";
 import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
 import { InMemoryRepository } from "ts-eventsourcing/ReadModel/InMemoryRepository";
 import * as winston from "winston";
 import { ConsoleClient } from "./client/console/ConsoleClient";
 import { LoggingCommandBusDecorator } from "./infrastructure/LoggingCommandBusDecorator";
+import { LoggingEventBus } from "./infrastructure/LoggingEventBus";
 import { LoggingQueryBusDecorator } from "./infrastructure/LoggingQueryBusDecorator";
 import { todoAppSerializer } from "./infrastructure/todoAppSerializer";
 import { TodoListReadModel } from "./todo/read/TodoListReadModel";
@@ -30,6 +32,7 @@ const app = new TodoApp(
   new InMemoryRepository<TodoListReadModel>(),
   {
     commandBus: new LoggingCommandBusDecorator(new SimpleCommandBus(), logger),
+    eventBus: new LoggingEventBus(new AsynchronousDomainEventBus(), logger),
     queryBus: new LoggingQueryBusDecorator(new SimpleQueryBus(), logger)
   }
 );
