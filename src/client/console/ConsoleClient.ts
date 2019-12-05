@@ -13,39 +13,88 @@ import Vorpal = require('vorpal');
 export class ConsoleClient extends Vorpal {
 
   private _todoApp: TodoApp;
+  private _contextualCommands: {[commandName: string]: Vorpal.Command} = {};
+  private _currentListId?: string;
 
   constructor(todoApp: TodoApp) {
     super();
     this._todoApp = todoApp;
-    this
-      .delimiter('todo>');
-    this
-      .command('show', 'Show lists.')
-      .action(this.showListAction);
-    this
-      .command('create <name>', 'Create a new todo list.')
-      .action(this.createListAction);
-    this
-      .command('rename', 'Rename a todo list.')
-      .action(this.renameListAction);
+
+    this.setupRootLevel();
+
     this
       .command('events', 'Dump all events')
-      .action(this.dumpEvents);
+      .action(this.dumpEventsAction);
     this
       .command('repository', 'Dump repository')
-      .action(this.dumpRepository);
+      .action(this.dumpRepositoryAction);
     this
       .command('replay', 'Replay events')
-      .action(this.replay);
+      .action(this.replayAction);
   }
 
-  private showListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+  private clearContextualCommands() {
+    for (const commandName in this._contextualCommands) {
+      if (this._contextualCommands.hasOwnProperty(commandName)) {
+        this._contextualCommands[commandName].remove();
+        delete this._contextualCommands[commandName];
+      }
+    }
+  }
+
+  private setupRootLevel() {
+    this.clearContextualCommands();
+    this
+      .delimiter('todo>');
+    this._contextualCommands.showLists = this
+      .command('show', 'Show lists.')
+      .action(this.showListAction);
+    this._contextualCommands.gotoList = this
+      .command('goto <name>', 'Go to todo list')
+      .action(this.gotoListAction);
+    this._contextualCommands.createList = this
+      .command('create <name>', 'Create a new todo list.')
+      .action(this.createListAction);
+    this._contextualCommands.renameList = this
+      .command('rename', 'Rename a todo list.')
+      .action(this.renameListAction);
+  }
+
+  private showListAction: Vorpal.Action = async (_args: Vorpal.Args) => {
     const lists = await this._todoApp
       .getQueryBus()
       .dispatch(new GetAllTodoLists());
     (lists as TodoListReadModel[]).forEach((l) => {
       this.log(`> ${l.name}`);
     });
+  }
+
+  private gotoListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    const lists$ = await this._todoApp
+      .getQueryBus()
+      .dispatch(new GetAllTodoLists()) as Observable<TodoListReadModel>;
+    const lists = await lists$.pipe(toArray()).toPromise();
+    const targetList = lists.find((l) => l.name === args.name);
+
+    if (targetList) {
+      this._currentListId = targetList.getId().toString();
+      this.clearContextualCommands();
+      this.delimiter(`todo | ${targetList.name}>`);
+      this._contextualCommands.renameCurrentList = this
+        .command('rename <newName>', 'Rename current list')
+        .action(this.renameCurrentListAction);
+      this._contextualCommands.goBack = this
+        .command('back', 'Go back to lists')
+        .action(this.goBackToListsAction);
+    } else {
+      this.log(`Error: unknown list ${args.name}`);
+    }
+
+  }
+
+  private goBackToListsAction: Vorpal.Action = async (_args: Vorpal.Args) => {
+    this._currentListId = undefined;
+    this.setupRootLevel();
   }
 
   private createListAction: Vorpal.Action = async (args: Vorpal.Args) => {
@@ -60,7 +109,7 @@ export class ConsoleClient extends Vorpal {
     }
   }
 
-  private renameListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+  private renameListAction: Vorpal.Action = async (_args: Vorpal.Args) => {
 
     const lists$ = await this._todoApp
       .getQueryBus()
@@ -98,7 +147,21 @@ export class ConsoleClient extends Vorpal {
 
   }
 
-  private dumpEvents: Vorpal.Action = async (args: Vorpal.Args) => {
+  private renameCurrentListAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    if (this._currentListId) {
+      const not: Notification = await this._todoApp
+        .getCommandBus()
+        .dispatch(new RenameTodoList(this._currentListId, args.newName));
+      if (!not.hasErrors()) {
+        this.delimiter(`todo | ${args.newName}>`);
+        this.log(`Renamed list`);
+      } else {
+        this.log(`Got errors: ${Array.from(not.getErrors().values()).join(', ')}`);
+      }
+    }
+  }
+
+  private dumpEventsAction: Vorpal.Action = async (_args: Vorpal.Args) => {
     const stream = await this._todoApp.getEventStore().loadAll();
     stream.pipe(
       map((dm) => {
@@ -107,14 +170,14 @@ export class ConsoleClient extends Vorpal {
     ).subscribe((s) => { this.log(s); });
   }
 
-  private dumpRepository: Vorpal.Action = async (args: Vorpal.Args) => {
+  private dumpRepositoryAction: Vorpal.Action = async (_args: Vorpal.Args) => {
     const lists = await this._todoApp.getTodoListRepository().findAll();
     lists.forEach((l) => {
       this.log(JSON.stringify(l));
     });
   }
 
-  private replay: Vorpal.Action = async (args: Vorpal.Args) => {
+  private replayAction: Vorpal.Action = async (_args: Vorpal.Args) => {
     const replayService = new ReplayService(
       this._todoApp.getEventStore(),
       this._todoApp.getEventBus(),
