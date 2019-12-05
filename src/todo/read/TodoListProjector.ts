@@ -1,4 +1,4 @@
-import { TodoItemAdded } from "todo/domain/event";
+import { TodoItemAdded, TodoItemDone } from "todo/domain/event";
 import { DomainMessage } from "ts-eventsourcing/Domain/DomainMessage";
 import { HandleDomainEvent } from "ts-eventsourcing/EventHandling/HandleDomainEvent";
 import { Projector } from "ts-eventsourcing/ReadModel/Projector";
@@ -38,8 +38,19 @@ export class TodoListProjector implements Projector {
     const model = await this.repository.get(message.aggregateId);
     model.items.push({
       description: _event.description,
-      done: false
+      done: false,
+      id: _event.idItem
     });
+    await this.repository.save(model);
+  }
+
+  @HandleDomainEvent
+  public async todoItemDone(
+    _event: TodoItemDone,
+    message: DomainMessage<TodoItemDone, TodoListId>
+  ) {
+    const model = await this.repository.get(message.aggregateId);
+    model.items.find(item => item.id === _event.idItem)!.done = true;
     await this.repository.save(model);
   }
 }

@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import {
   AddItemToTodoList,
   CreateTodoList,
+  MarkItemDone,
   Notification,
   RenameTodoList
 } from "todo/command";
@@ -99,6 +100,10 @@ export class ConsoleClient extends Vorpal {
         "show",
         "Show items in the list"
       ).action(this.showTodoItemsAction);
+      this._contextualCommands.markItemDone = this.command(
+        "check <item>",
+        "Mark the item as done"
+      ).action(this.markTodoItemDoneAction);
     } else {
       this.log(`Error: unknown list ${args.name}`);
     }
@@ -192,7 +197,7 @@ export class ConsoleClient extends Vorpal {
       );
       if (currentList) {
         currentList.items.forEach(item => {
-          this.log(`> ${item.description}`);
+          this.log(`> ${item.description}${item.done ? " 👍" : ""}`);
         });
       }
     }
@@ -215,6 +220,39 @@ export class ConsoleClient extends Vorpal {
         this.log(
           `Got errors: ${Array.from(not.getErrors().values()).join(", ")}`
         );
+      }
+    }
+  };
+
+  private markTodoItemDoneAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    if (this._currentListId) {
+      const lists$ = (await this._todoApp
+        .getQueryBus()
+        .dispatch(new GetAllTodoLists())) as Observable<TodoListReadModel>;
+      const lists = await lists$.pipe(toArray()).toPromise();
+      const currentList = lists.find(
+        l => l.id.toString() === this._currentListId
+      );
+      if (currentList) {
+        const itemToMarkAsDone = currentList.items.find(
+          item => item.description === args.item
+        );
+        if (itemToMarkAsDone) {
+          const not: Notification = await this._todoApp
+            .getCommandBus()
+            .dispatch(
+              new MarkItemDone(this._currentListId, itemToMarkAsDone.id)
+            );
+          if (!not.hasErrors()) {
+            this.log(`Item marked as done`);
+          } else {
+            this.log(
+              `Got errors: ${Array.from(not.getErrors().values()).join(", ")}`
+            );
+          }
+        } else {
+          this.log(`Error: no such item "${args.item}"`);
+        }
       }
     }
   };
