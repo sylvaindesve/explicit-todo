@@ -74,7 +74,7 @@ export class ConsoleClient extends Vorpal {
       .getQueryBus()
       .dispatch(new GetAllTodoLists());
     (lists as TodoListReadModel[]).forEach(l => {
-      this.log(`> ${l.name}`);
+      this.log(`> ${l.name} (${l.items.length})`);
     });
   };
 
