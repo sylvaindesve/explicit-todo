@@ -2,12 +2,12 @@
   "defaultSeverity": "warning",
   "extends": [
     "tslint:recommended",
-    "tslint-eslint-rules"
+    "tslint-eslint-rules",
+    "tslint-config-prettier"
   ],
   "jsRules": {},
   "rules": {
     "interface-name": ["never-prefix"],
-    "quotemark": [true, "single", "avoid-escape"],
     "variable-name": [
       true,
       "allow-leading-underscore",

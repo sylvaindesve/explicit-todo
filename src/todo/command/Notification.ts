@@ -1,5 +1,4 @@
 export class Notification {
-
   private _errors: Map<string, string> = new Map<string, string>();
 
   public addError(field: string, error: string): void {
@@ -13,5 +12,4 @@ export class Notification {
   public getErrors(): Map<string, string> {
     return this._errors;
   }
-
 }

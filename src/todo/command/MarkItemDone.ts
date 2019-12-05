@@ -1,10 +1,5 @@
-import { Command } from 'ts-eventsourcing/CommandHandling/Command';
+import { Command } from "ts-eventsourcing/CommandHandling/Command";
 
 export class MarkItemDone implements Command {
-
-  constructor(
-    public readonly id: string,
-    public readonly itemId: string,
-  ) {}
-
+  constructor(public readonly id: string, public readonly itemId: string) {}
 }

@@ -1,7 +1,6 @@
-import { ValueObject } from '../ValueObject';
+import { ValueObject } from "../ValueObject";
 
 export class TodoItemDescription implements ValueObject<TodoItemDescription> {
-
   private _description: string;
 
   constructor(name: string) {
@@ -19,5 +18,4 @@ export class TodoItemDescription implements ValueObject<TodoItemDescription> {
   public sameAs(other: TodoItemDescription) {
     return this._description === other._description;
   }
-
 }

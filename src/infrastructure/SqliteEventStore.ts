@@ -1,17 +1,17 @@
-import { from, Observable } from 'rxjs';
-import { flatMap, map, mergeAll } from 'rxjs/operators';
-import { Database, open } from 'sqlite';
-import { TodoListCreated, TodoListNameChanged } from 'todo/domain/event';
-import { ClassUtil } from 'ts-eventsourcing/ClassUtil';
-import { DomainEvent } from 'ts-eventsourcing/Domain/DomainEvent';
-import { DomainEventStream } from 'ts-eventsourcing/Domain/DomainEventStream';
-import { DomainMessage } from 'ts-eventsourcing/Domain/DomainMessage';
-import { EventStore } from 'ts-eventsourcing/EventStore/EventStore';
-import { Identity } from 'ts-eventsourcing/ValueObject/Identity';
-import { UuidIdentity } from 'ts-eventsourcing/ValueObject/UuidIdentity';
+import { from, Observable } from "rxjs";
+import { flatMap, map, mergeAll } from "rxjs/operators";
+import { Database, open } from "sqlite";
+import { TodoListCreated, TodoListNameChanged } from "todo/domain/event";
+import { ClassUtil } from "ts-eventsourcing/ClassUtil";
+import { DomainEvent } from "ts-eventsourcing/Domain/DomainEvent";
+import { DomainEventStream } from "ts-eventsourcing/Domain/DomainEventStream";
+import { DomainMessage } from "ts-eventsourcing/Domain/DomainMessage";
+import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
+import { Identity } from "ts-eventsourcing/ValueObject/Identity";
+import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 
-export class SqliteEventStore<Id extends Identity = Identity> implements EventStore<Id> {
-
+export class SqliteEventStore<Id extends Identity = Identity>
+  implements EventStore<Id> {
   private _databaseFile: string;
   private _database: null | Database = null;
 
@@ -21,16 +21,20 @@ export class SqliteEventStore<Id extends Identity = Identity> implements EventSt
 
   public async has(id: Id): Promise<boolean> {
     const db = await this.getDatabase();
-    const result: any = await db.get(`SELECT * FROM events WHERE aggregateId = "${id.toString()}"`);
+    const result: any = await db.get(
+      `SELECT * FROM events WHERE aggregateId = "${id.toString()}"`
+    );
     return result !== undefined;
   }
 
   public load(id: Id): DomainEventStream {
-    return this.getEvents(`SELECT * FROM events WHERE aggregateId = "${id.toString()}"`);
+    return this.getEvents(
+      `SELECT * FROM events WHERE aggregateId = "${id.toString()}"`
+    );
   }
 
   public loadAll(): DomainEventStream {
-    return this.getEvents('SELECT * FROM events');
+    return this.getEvents("SELECT * FROM events");
   }
 
   public loadFromPlayhead(id: Id, playhead: number): DomainEventStream {
@@ -40,15 +44,18 @@ export class SqliteEventStore<Id extends Identity = Identity> implements EventSt
 
   public async append(id: Id, eventStream: DomainEventStream): Promise<void> {
     const db = await this.getDatabase();
-    eventStream.subscribe((dm) => {
-      db.run(`INSERT INTO events(aggregateId, playhead, eventType, payload, recordOn)
-        VALUES(?, ?, ?, ?, ?)`, [
+    eventStream.subscribe(dm => {
+      db.run(
+        `INSERT INTO events(aggregateId, playhead, eventType, payload, recordOn)
+        VALUES(?, ?, ?, ?, ?)`,
+        [
           id.toString(),
           dm.playhead,
           ClassUtil.nameOff(dm.payload),
           JSON.stringify(dm.payload),
-          JSON.stringify(dm.recordedOn),
-        ]);
+          JSON.stringify(dm.recordedOn)
+        ]
+      );
     });
   }
 
@@ -72,28 +79,27 @@ export class SqliteEventStore<Id extends Identity = Identity> implements EventSt
         return from(db.all(query));
       }),
       mergeAll(),
-      map((row) => {
+      map(row => {
         const dm = new DomainMessage(
           new UuidIdentity(row.aggregateId),
           row.playhead,
           this.parseDomainEvent(row.eventType, row.payload),
-          JSON.parse(row.recordOn),
+          JSON.parse(row.recordOn)
         );
         return dm;
-      }),
+      })
     );
   }
 
   private parseDomainEvent(eventType: string, payload: string): DomainEvent {
     const payloadAsObject: any = JSON.parse(payload);
     switch (eventType) {
-      case 'TodoListCreated':
+      case "TodoListCreated":
         return new TodoListCreated();
-      case 'TodoListNameChanged':
+      case "TodoListNameChanged":
         return new TodoListNameChanged(payloadAsObject.name);
       default:
         throw new Error(`Unknown event type ${eventType}`);
     }
   }
-
 }

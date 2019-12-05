@@ -1,4 +1,4 @@
 export enum TodoItemStatus {
   TODO,
-  DONE,
+  DONE
 }
