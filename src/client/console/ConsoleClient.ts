@@ -2,8 +2,8 @@ import { Answers, Question } from 'inquirer';
 import { Observable } from 'rxjs';
 import { toArray } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
-import { CreateTodoList, Notification, RenameTodoList } from 'todo/command';
-import { TodoListId } from 'todo/domain';
+import { CreateTodoList, Notification, RenameTodoList, AddItemToTodoList } from 'todo/command';
+import { TodoListId, TodoItemId } from 'todo/domain';
 import { GetAllTodoLists } from 'todo/query';
 import { TodoListReadModel } from 'todo/read';
 import { TodoApp } from 'todo/TodoApp';
@@ -86,6 +86,12 @@ export class ConsoleClient extends Vorpal {
       this._contextualCommands.goBack = this
         .command('back', 'Go back to lists')
         .action(this.goBackToListsAction);
+      this._contextualCommands.addItem = this
+        .command('add <description>', 'Add an item to the list')
+        .action(this.addTodoItemAction);
+      this._contextualCommands.showItems = this
+        .command('show', 'Show items in the list')
+        .action(this.showTodoItemsAction);
     } else {
       this.log(`Error: unknown list ${args.name}`);
     }
@@ -155,6 +161,34 @@ export class ConsoleClient extends Vorpal {
       if (!not.hasErrors()) {
         this.delimiter(`todo | ${args.newName}>`);
         this.log(`Renamed list`);
+      } else {
+        this.log(`Got errors: ${Array.from(not.getErrors().values()).join(', ')}`);
+      }
+    }
+  }
+
+  private showTodoItemsAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    if (this._currentListId) {
+      const lists$ = await this._todoApp
+        .getQueryBus()
+        .dispatch(new GetAllTodoLists()) as Observable<TodoListReadModel>;
+      const lists = await lists$.pipe(toArray()).toPromise();
+      const currentList = lists.find((l) => l.id.toString() === this._currentListId);
+      if (currentList) {
+        currentList.items.forEach((item) => {
+          this.log(`> ${item.description}`);
+        });
+      }
+    }
+  }
+
+  private addTodoItemAction: Vorpal.Action = async (args: Vorpal.Args) => {
+    if (this._currentListId) {
+      const not: Notification = await this._todoApp
+        .getCommandBus()
+        .dispatch(new AddItemToTodoList(this._currentListId, TodoItemId.create().toString(), args.description));
+      if (!not.hasErrors()) {
+        this.log(`Item added`);
       } else {
         this.log(`Got errors: ${Array.from(not.getErrors().values()).join(', ')}`);
       }

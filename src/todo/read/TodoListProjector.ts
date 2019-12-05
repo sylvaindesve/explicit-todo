@@ -1,3 +1,4 @@
+import { TodoItemAdded } from 'todo/domain/event';
 import { DomainMessage } from 'ts-eventsourcing/Domain/DomainMessage';
 import { HandleDomainEvent } from 'ts-eventsourcing/EventHandling/HandleDomainEvent';
 import { Projector } from 'ts-eventsourcing/ReadModel/Projector';
@@ -20,10 +21,20 @@ export class TodoListProjector implements Projector {
   }
 
   @HandleDomainEvent
-  public async todoListNameChanged(_event: TodoListNameChanged, message: DomainMessage<TodoListCreated, TodoListId>) {
+  public async todoListNameChanged(_event: TodoListNameChanged,
+                                   message: DomainMessage<TodoListNameChanged, TodoListId>) {
     const model = await this.repository.get(message.aggregateId);
     model.name = _event.name;
     await this.repository.save(model);
   }
 
+  @HandleDomainEvent
+  public async todoItemAdded(_event: TodoItemAdded, message: DomainMessage<TodoItemAdded, TodoListId>) {
+    const model = await this.repository.get(message.aggregateId);
+    model.items.push({
+      description: _event.description,
+      done: false,
+    });
+    await this.repository.save(model);
+  }
 }

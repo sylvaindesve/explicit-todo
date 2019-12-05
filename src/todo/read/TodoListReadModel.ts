@@ -4,6 +4,7 @@ import { TodoListId } from '../domain/TodoListId';
 export class TodoListReadModel implements ReadModel<TodoListId> {
 
   public name: string = '';
+  public items: Array<{description: string; done: boolean}> = [];
 
   constructor(
     public readonly id: TodoListId,
