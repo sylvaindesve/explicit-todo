@@ -7,14 +7,11 @@ Event Sourcing
 
 These are the resources that helped me during my learning.
 
-* [Explicit
-* Architecture](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/)
-* [// thinkbeforecoding](https://thinkbeforecoding.com/category/all) [Dette
-* technique et entropie du logiciel - Arnaud
-* Lemaire](https://www.youtube.com/watch?v=VKe9EE4MUxk&t=4646s) (french) [CQRS,
-* Fonctionnel, Event Sourcing & Domain Driven Design - Arnaud
-* Lemaire](https://www.youtube.com/watch?v=qBLtZN3p3FU&t=1s) (french)
-* (ts-eventsourcing library)[https://gitlab.com/epinxteren/ts-eventsourcing]
+* [Explicit Architecture](https://herbertograca.com/2017/11/16/explicit-architecture-01-ddd-hexagonal-onion-clean-cqrs-how-i-put-it-all-together/)
+* [// thinkbeforecoding](https://thinkbeforecoding.com/category/all)
+* [Dette technique et entropie du logiciel - Arnaud Lemaire](https://www.youtube.com/watch?v=VKe9EE4MUxk&t=4646s) (french)
+* [CQRS, Fonctionnel, Event Sourcing & Domain Driven Design - Arnaud Lemaire](https://www.youtube.com/watch?v=qBLtZN3p3FU&t=1s) (french)
+* [ts-eventsourcing library](https://gitlab.com/epinxteren/ts-eventsourcing)
 
 ## Ubiquitous language
 
