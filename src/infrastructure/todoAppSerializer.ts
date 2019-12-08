@@ -6,6 +6,7 @@ import {
   TodoListCreated,
   TodoListNameChanged
 } from "todo/domain/event";
+import { TodoListReadModel } from "todo/read";
 import { createClassHandlers } from "ts-eventsourcing/Serializer/transit-js/createClassHandlers";
 import { TransitJSSerializer } from "ts-eventsourcing/Serializer/transit-js/TransitJSSerializer";
 
@@ -37,7 +38,8 @@ const classHandlers: any[] = createClassHandlers({
   TodoItemId,
   TodoListArchived,
   TodoListCreated,
-  TodoListNameChanged
+  TodoListNameChanged,
+  TodoListReadModel
 });
 
 export const todoAppSerializer = new TransitJSSerializer(

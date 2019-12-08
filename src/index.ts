@@ -2,14 +2,13 @@ import { SimpleCommandBus } from "ts-eventsourcing/CommandHandling/SimpleCommand
 import { AsynchronousDomainEventBus } from "ts-eventsourcing/EventHandling/DomainEventBus/AsynchronousDomainEventBus";
 import { FileEventStore } from "ts-eventsourcing/EventStore/FileEventStore";
 import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
-import { InMemoryRepository } from "ts-eventsourcing/ReadModel/InMemoryRepository";
 import * as winston from "winston";
 import { ConsoleClient } from "./client/console/ConsoleClient";
+import { FileRepository } from "./infrastructure/FileRepository";
 import { LoggingCommandBusDecorator } from "./infrastructure/LoggingCommandBusDecorator";
 import { LoggingEventBus } from "./infrastructure/LoggingEventBus";
 import { LoggingQueryBusDecorator } from "./infrastructure/LoggingQueryBusDecorator";
 import { todoAppSerializer } from "./infrastructure/todoAppSerializer";
-import { TodoListReadModel } from "./todo/read/TodoListReadModel";
 import { TodoApp } from "./todo/TodoApp";
 
 const logger = winston.createLogger({
@@ -29,7 +28,7 @@ const logger = winston.createLogger({
 
 const app = new TodoApp(
   FileEventStore.fromFile("./data/event-store", todoAppSerializer),
-  new InMemoryRepository<TodoListReadModel>(),
+  new FileRepository("./data/readmodel-store", todoAppSerializer),
   {
     commandBus: new LoggingCommandBusDecorator(new SimpleCommandBus(), logger),
     eventBus: new LoggingEventBus(new AsynchronousDomainEventBus(), logger),
