@@ -9,7 +9,6 @@ import {
   GetAllTodoLists,
   MarkItemDone,
   RenameTodoList,
-  TodoDomainError,
   TodoItemAdded,
   TodoItemDone,
   TodoItemId,
@@ -99,7 +98,6 @@ describe("TodoList scenario", () => {
         new TodoListNameChanged("New todo list"),
         new TodoItemAdded(idItem.toString(), "Item")
       ])
-      .throws(TodoDomainError)
       .whenCommands([new ArchiveTodoList(id.toString())])
       .thenMatchEvents([]);
   });

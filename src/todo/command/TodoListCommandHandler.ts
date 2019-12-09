@@ -11,6 +11,7 @@ import {
   TodoItemDescription,
   TodoItemId,
   TodoList,
+  TodoListCanBeArchived,
   TodoListId,
   TodoListName
 } from "..";
@@ -74,8 +75,16 @@ export class TodoListCommandHandler implements CommandHandler {
 
     if (id && !not.hasErrors()) {
       const todoList = await this._repository.load(id);
-      todoList.archive();
-      await this._repository.save(todoList);
+      const canBeArchived = new TodoListCanBeArchived();
+      if (canBeArchived.satisfiedBy(todoList)) {
+        todoList.archive();
+        await this._repository.save(todoList);
+      } else {
+        not.addError(
+          "id",
+          `Cannot be archived: ${canBeArchived.explanation()}`
+        );
+      }
     }
 
     return not;
