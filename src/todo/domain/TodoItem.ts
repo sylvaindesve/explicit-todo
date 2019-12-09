@@ -1,10 +1,12 @@
 import { AggregateHandleEvent } from "ts-eventsourcing/EventSourcing/AggregateHandleEvent";
 import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
-import { TodoItemDone } from "./event";
-import { TodoItemDescription } from "./TodoItemDescription";
-import { TodoItemId } from "./TodoItemId";
-import { TodoItemStatus } from "./TodoItemStatus";
-import { TodoList } from "./TodoList";
+import {
+  TodoItemDescription,
+  TodoItemDone,
+  TodoItemId,
+  TodoItemStatus,
+  TodoList
+} from "..";
 
 export class TodoItem extends EventSourcedEntity<TodoList> {
   private _id: TodoItemId;

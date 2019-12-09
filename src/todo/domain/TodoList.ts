@@ -3,17 +3,17 @@ import { EventSourcedAggregateRoot } from "ts-eventsourcing/EventSourcing/EventS
 import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 import {
+  TodoItem,
   TodoItemAdded,
+  TodoItemDescription,
   TodoItemDone,
+  TodoItemId,
+  TodoListArchived,
   TodoListCreated,
+  TodoListId,
+  TodoListName,
   TodoListNameChanged
-} from "./event";
-import { TodoListArchived } from "./event/TodoListArchived";
-import { TodoItem } from "./TodoItem";
-import { TodoItemDescription } from "./TodoItemDescription";
-import { TodoItemId } from "./TodoItemId";
-import { TodoListId } from "./TodoListId";
-import { TodoListName } from "./TodoListName";
+} from "..";
 
 export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
   public static create(id: TodoListId) {

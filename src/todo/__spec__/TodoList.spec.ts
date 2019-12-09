@@ -2,21 +2,24 @@ import { Observable } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { EventSourcingTestBench } from "ts-eventsourcing/Testing/EventSourcingTestBench";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
-import { AddItemToTodoList } from "../command/AddItemToTodoList";
-import { CreateTodoList } from "../command/CreateTodoList";
-import { MarkItemDone } from "../command/MarkItemDone";
-import { RenameTodoList } from "../command/RenameTodoList";
-import { TodoListCommandHandler } from "../command/TodoListCommandHandler";
-import { TodoItemAdded } from "../domain/event/TodoItemAdded";
-import { TodoItemDone } from "../domain/event/TodoItemDone";
-import { TodoListCreated } from "../domain/event/TodoListCreated";
-import { TodoListNameChanged } from "../domain/event/TodoListNameChanged";
-import { TodoItemStatus } from "../domain/TodoItemStatus";
-import { TodoList } from "../domain/TodoList";
-import { TodoListId } from "../domain/TodoListId";
-import { GetAllTodoLists, TodoListQueryHandler } from "../query";
-import { TodoListProjector } from "../read/TodoListProjector";
-import { TodoListReadModel } from "../read/TodoListReadModel";
+import {
+  AddItemToTodoList,
+  CreateTodoList,
+  GetAllTodoLists,
+  MarkItemDone,
+  RenameTodoList,
+  TodoItemAdded,
+  TodoItemDone,
+  TodoItemStatus,
+  TodoList,
+  TodoListCommandHandler,
+  TodoListCreated,
+  TodoListId,
+  TodoListNameChanged,
+  TodoListProjector,
+  TodoListQueryHandler,
+  TodoListReadModel
+} from "..";
 
 describe("TodoList scenario", () => {
   test("Creating a new TodoList", async () => {

@@ -9,7 +9,7 @@ import { LoggingCommandBusDecorator } from "./infrastructure/LoggingCommandBusDe
 import { LoggingEventBus } from "./infrastructure/LoggingEventBus";
 import { LoggingQueryBusDecorator } from "./infrastructure/LoggingQueryBusDecorator";
 import { todoAppSerializer } from "./infrastructure/todoAppSerializer";
-import { TodoApp } from "./todo/TodoApp";
+import { TodoApp } from "./todo";
 
 const logger = winston.createLogger({
   level: "info",

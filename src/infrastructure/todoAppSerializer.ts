@@ -1,14 +1,15 @@
-import { TodoItemId, TodoListId } from "todo/domain";
+import { createClassHandlers } from "ts-eventsourcing/Serializer/transit-js/createClassHandlers";
+import { TransitJSSerializer } from "ts-eventsourcing/Serializer/transit-js/TransitJSSerializer";
 import {
   TodoItemAdded,
   TodoItemDone,
+  TodoItemId,
   TodoListArchived,
   TodoListCreated,
-  TodoListNameChanged
-} from "todo/domain/event";
-import { TodoListReadModel } from "todo/read";
-import { createClassHandlers } from "ts-eventsourcing/Serializer/transit-js/createClassHandlers";
-import { TransitJSSerializer } from "ts-eventsourcing/Serializer/transit-js/TransitJSSerializer";
+  TodoListId,
+  TodoListNameChanged,
+  TodoListReadModel
+} from "../todo";
 
 const todoListIdSerializerInterface = {
   class: TodoListId,

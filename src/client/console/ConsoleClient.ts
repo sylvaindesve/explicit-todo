@@ -2,20 +2,21 @@ import { Answers, Question } from "inquirer";
 import { Observable } from "rxjs";
 import { toArray } from "rxjs/operators";
 import { map } from "rxjs/operators";
-import {
-  AddItemToTodoList,
-  CreateTodoList,
-  MarkItemDone,
-  Notification,
-  RenameTodoList
-} from "todo/command";
-import { ArchiveTodoList } from "todo/command/ArchiveTodoList";
-import { TodoItemId, TodoListId } from "todo/domain";
-import { GetAllTodoLists } from "todo/query";
-import { TodoListReadModel } from "todo/read";
-import { TodoApp } from "todo/TodoApp";
 import { ReplayService } from "ts-eventsourcing/ReplayService";
 import Vorpal = require("vorpal");
+import {
+  AddItemToTodoList,
+  ArchiveTodoList,
+  CreateTodoList,
+  GetAllTodoLists,
+  MarkItemDone,
+  Notification,
+  RenameTodoList,
+  TodoApp,
+  TodoItemId,
+  TodoListId,
+  TodoListReadModel
+} from "../../todo";
 
 export class ConsoleClient extends Vorpal {
   private _todoApp: TodoApp;

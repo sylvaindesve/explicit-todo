@@ -1,17 +1,19 @@
 import { CommandHandler } from "ts-eventsourcing/CommandHandling/CommandHandler";
 import { HandleCommand } from "ts-eventsourcing/CommandHandling/HandleCommand";
 import { EventSourcingRepositoryInterface } from "ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface";
-import { TodoItemDescription } from "../domain/TodoItemDescription";
-import { TodoItemId } from "../domain/TodoItemId";
-import { TodoList } from "../domain/TodoList";
-import { TodoListId } from "../domain/TodoListId";
-import { TodoListName } from "../domain/TodoListName";
-import { AddItemToTodoList } from "./AddItemToTodoList";
-import { ArchiveTodoList } from "./ArchiveTodoList";
-import { CreateTodoList } from "./CreateTodoList";
-import { MarkItemDone } from "./MarkItemDone";
-import { Notification } from "./Notification";
-import { RenameTodoList } from "./RenameTodoList";
+import {
+  AddItemToTodoList,
+  ArchiveTodoList,
+  CreateTodoList,
+  MarkItemDone,
+  Notification,
+  RenameTodoList,
+  TodoItemDescription,
+  TodoItemId,
+  TodoList,
+  TodoListId,
+  TodoListName
+} from "..";
 
 export class TodoListCommandHandler implements CommandHandler {
   private _repository: EventSourcingRepositoryInterface<TodoList>;

@@ -10,10 +10,14 @@ import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import { QueryBus } from "ts-eventsourcing/QueryHandling/QueryBus";
 import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
 import { Identity } from "ts-eventsourcing/ValueObject/Identity";
-import { TodoListCommandHandler } from "./command";
-import { TodoList, TodoListId } from "./domain";
-import { TodoListQueryHandler } from "./query";
-import { TodoListProjector, TodoListReadModelRepository } from "./read";
+import {
+  TodoList,
+  TodoListCommandHandler,
+  TodoListId,
+  TodoListProjector,
+  TodoListQueryHandler,
+  TodoListReadModelRepository
+} from ".";
 
 export interface TodoAppOptions {
   commandBus?: CommandBus;

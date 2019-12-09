@@ -1,4 +1,4 @@
-import { ValueObject } from "../ValueObject";
+import { ValueObject } from "..";
 
 export class TodoItemDescription implements ValueObject<TodoItemDescription> {
   private _description: string;
