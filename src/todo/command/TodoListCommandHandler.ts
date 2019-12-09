@@ -5,6 +5,8 @@ import {
   AddItemToTodoList,
   ArchiveTodoList,
   CreateTodoList,
+  IsTodoItemDescriptionValid,
+  IsTodoListNameValid,
   MarkItemDone,
   Notification,
   RenameTodoList,
@@ -164,14 +166,9 @@ export class TodoListCommandHandler implements CommandHandler {
   }
 
   private validateTodoListName(name: string, notification: Notification): void {
-    if (name.length === 0) {
-      notification.addError("name", "Name must not be empty.");
-    }
-    if (name.length > 100) {
-      notification.addError(
-        "name",
-        "Name must not be longer than 100 characters."
-      );
+    const isNameValid = new IsTodoListNameValid();
+    if (!isNameValid.satisfiedBy(name)) {
+      notification.addError("name", isNameValid.explanation());
     }
   }
 
@@ -179,14 +176,9 @@ export class TodoListCommandHandler implements CommandHandler {
     description: string,
     notification: Notification
   ): void {
-    if (description.length === 0) {
-      notification.addError("description", "Description must not be empty.");
-    }
-    if (description.length > 100) {
-      notification.addError(
-        "description",
-        "Description must not be longer than 100 characters."
-      );
+    const isDescriptionValid = new IsTodoItemDescriptionValid();
+    if (!isDescriptionValid.satisfiedBy(description)) {
+      notification.addError("description", isDescriptionValid.explanation());
     }
   }
 }

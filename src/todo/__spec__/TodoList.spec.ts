@@ -126,6 +126,25 @@ describe("TodoList scenario", () => {
       ]);
   });
 
+  test("Adding an item with a too long description", async () => {
+    const id = TodoListId.create();
+    const idItem = UuidIdentity.create();
+    await EventSourcingTestBench.create()
+      .givenCommandHandler((testBench: EventSourcingTestBench) => {
+        return new TodoListCommandHandler(
+          testBench.getAggregateRepository(TodoList)
+        );
+      })
+      .givenEvents(id, TodoList, [
+        new TodoListCreated(),
+        new TodoListNameChanged("New todo list")
+      ])
+      .whenCommands([
+        new AddItemToTodoList(id.toString(), idItem.toString(), "a".repeat(150))
+      ])
+      .thenMatchEvents([]);
+  });
+
   test("Marking item done", async () => {
     const id = TodoListId.create();
     const idItem1 = UuidIdentity.create();

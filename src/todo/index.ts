@@ -21,6 +21,8 @@ export { TodoItemDescription } from "./domain/TodoItemDescription";
 export { TodoItemStatus } from "./domain/TodoItemStatus";
 export { TodoItem } from "./domain/TodoItem";
 
+export { IsTodoListNameValid } from "./domain/rules/IsTodoListNameValid";
+export { IsTodoItemDescriptionValid } from "./domain/rules/IsTodoItemDescriptionValid";
 export { TodoListCanBeArchived } from "./domain/rules/TodoListCanBeArchived";
 
 export { TodoApp } from "./TodoApp";
