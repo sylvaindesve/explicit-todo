@@ -3,6 +3,8 @@
 
 export { ValueObject } from "./ValueObject";
 
+export { TodoDomainError } from "./domain/error/TodoDomainError";
+
 // Import events first so that the @AggregateHandleEvent decorator works as expected
 export { TodoListCreated } from "./domain/event/TodoListCreated";
 export { TodoListNameChanged } from "./domain/event/TodoListNameChanged";
@@ -18,6 +20,8 @@ export { TodoItemId } from "./domain/TodoItemId";
 export { TodoItemDescription } from "./domain/TodoItemDescription";
 export { TodoItemStatus } from "./domain/TodoItemStatus";
 export { TodoItem } from "./domain/TodoItem";
+
+export { TodoListCanBeArchived } from "./domain/rules/TodoListCanBeArchived";
 
 export { TodoApp } from "./TodoApp";
 

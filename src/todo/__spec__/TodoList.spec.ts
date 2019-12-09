@@ -4,14 +4,18 @@ import { EventSourcingTestBench } from "ts-eventsourcing/Testing/EventSourcingTe
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 import {
   AddItemToTodoList,
+  ArchiveTodoList,
   CreateTodoList,
   GetAllTodoLists,
   MarkItemDone,
   RenameTodoList,
+  TodoDomainError,
   TodoItemAdded,
   TodoItemDone,
+  TodoItemId,
   TodoItemStatus,
   TodoList,
+  TodoListArchived,
   TodoListCommandHandler,
   TodoListCreated,
   TodoListId,
@@ -65,6 +69,41 @@ describe("TodoList scenario", () => {
       .thenMatchEvents([new TodoListNameChanged("New name")]);
   });
 
+  test("Archiving a TodoList", async () => {
+    const id = TodoListId.create();
+    await EventSourcingTestBench.create()
+      .givenCommandHandler((testBench: EventSourcingTestBench) => {
+        return new TodoListCommandHandler(
+          testBench.getAggregateRepository(TodoList)
+        );
+      })
+      .givenEvents(id, TodoList, [
+        new TodoListCreated(),
+        new TodoListNameChanged("New todo list")
+      ])
+      .whenCommands([new ArchiveTodoList(id.toString())])
+      .thenMatchEvents([new TodoListArchived()]);
+  });
+
+  test("Archiving a non-empty TodoList", async () => {
+    const id = TodoListId.create();
+    const idItem = UuidIdentity.create();
+    await EventSourcingTestBench.create()
+      .givenCommandHandler((testBench: EventSourcingTestBench) => {
+        return new TodoListCommandHandler(
+          testBench.getAggregateRepository(TodoList)
+        );
+      })
+      .givenEvents(id, TodoList, [
+        new TodoListCreated(),
+        new TodoListNameChanged("New todo list"),
+        new TodoItemAdded(idItem.toString(), "Item")
+      ])
+      .throws(TodoDomainError)
+      .whenCommands([new ArchiveTodoList(id.toString())])
+      .thenMatchEvents([]);
+  });
+
   test("Adding items to TodoList", async () => {
     const id = TodoListId.create();
     const idItem1 = UuidIdentity.create();
@@ -116,22 +155,84 @@ describe("TodoList scenario", () => {
       });
   });
 
-  test("Projecting TodoListReadModel", async () => {
-    const id = TodoListId.create();
-    const expectedModel = new TodoListReadModel(id);
-    expectedModel.name = "List name";
+  describe("Projecting TodoListReadModel", () => {
+    test("TodoList creation", async () => {
+      const id = TodoListId.create();
+      const expectedModel = new TodoListReadModel(id);
+      expectedModel.name = "List name";
 
-    await EventSourcingTestBench.create()
-      .givenEventListener(testBench => {
-        return new TodoListProjector(
-          testBench.getReadModelRepository(TodoListReadModel)
-        );
-      })
-      .whenEventsHappened(id, [
-        new TodoListCreated(),
-        new TodoListNameChanged("List name")
-      ])
-      .thenModelsShouldMatch([expectedModel]);
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List name")
+        ])
+        .thenModelsShouldMatch([expectedModel]);
+    });
+
+    test("TodoList archive", async () => {
+      const id = TodoListId.create();
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id, [new TodoListCreated(), new TodoListArchived()])
+        .thenModelsShouldMatch([]);
+    });
+
+    test("Adding items to TodoList", async () => {
+      const id = TodoListId.create();
+      const idItem = TodoItemId.create();
+      const expectedModel = new TodoListReadModel(id);
+      expectedModel.items.push({
+        description: "Item",
+        done: false,
+        id: idItem.toString()
+      });
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id, [
+          new TodoListCreated(),
+          new TodoItemAdded(idItem.toString(), "Item")
+        ])
+        .thenModelsShouldMatch([expectedModel]);
+    });
+
+    test("Marking an item done in a TodoList", async () => {
+      const id = TodoListId.create();
+      const idItem = TodoItemId.create();
+      const expectedModel = new TodoListReadModel(id);
+      expectedModel.items.push({
+        description: "Item",
+        done: true,
+        id: idItem.toString()
+      });
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id, [
+          new TodoListCreated(),
+          new TodoItemAdded(idItem.toString(), "Item"),
+          new TodoItemDone(idItem.toString())
+        ])
+        .thenModelsShouldMatch([expectedModel]);
+    });
   });
 
   test("Getting all lists", async () => {

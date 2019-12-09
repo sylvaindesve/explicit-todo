@@ -3,12 +3,14 @@ import { EventSourcedAggregateRoot } from "ts-eventsourcing/EventSourcing/EventS
 import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedEntity";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 import {
+  TodoDomainError,
   TodoItem,
   TodoItemAdded,
   TodoItemDescription,
   TodoItemDone,
   TodoItemId,
   TodoListArchived,
+  TodoListCanBeArchived,
   TodoListCreated,
   TodoListId,
   TodoListName,
@@ -53,7 +55,14 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
   }
 
   public archive(): void {
-    this.apply(new TodoListArchived());
+    const canBeArchived = new TodoListCanBeArchived();
+    if (canBeArchived.satisfiedBy(this)) {
+      this.apply(new TodoListArchived());
+    } else {
+      throw new TodoDomainError(
+        "Cannot archive list : " + canBeArchived.explanation()
+      );
+    }
   }
 
   protected getChildEntities(): Array<EventSourcedEntity<any>> {
