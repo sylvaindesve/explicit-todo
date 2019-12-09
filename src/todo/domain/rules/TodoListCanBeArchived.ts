@@ -3,7 +3,7 @@ import { AbstractSpecification } from "../../../utils/specification";
 
 export class TodoListCanBeArchived extends AbstractSpecification<TodoList> {
   public explanation(): string {
-    return "Cannot be archvied unless all items are done (or it has no items)";
+    return "Cannot be archived unless all items are done (or it has no items)";
   }
 
   public satisfiedBy(target: TodoList): boolean {

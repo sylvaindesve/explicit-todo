@@ -80,10 +80,7 @@ export class TodoListCommandHandler implements CommandHandler {
         todoList.archive();
         await this._repository.save(todoList);
       } else {
-        not.addError(
-          "id",
-          `Cannot be archived: ${canBeArchived.explanation()}`
-        );
+        not.addError("id", canBeArchived.explanation());
       }
     }
 
