@@ -9,14 +9,17 @@ import { EventSourcingRepository } from "ts-eventsourcing/EventSourcing/Reposito
 import { EventStore } from "ts-eventsourcing/EventStore/EventStore";
 import { QueryBus } from "ts-eventsourcing/QueryHandling/QueryBus";
 import { SimpleQueryBus } from "ts-eventsourcing/QueryHandling/SimpleQueryBus";
+import { Repository } from "ts-eventsourcing/ReadModel/Repository";
 import { Identity } from "ts-eventsourcing/ValueObject/Identity";
 import {
+  StatsProjector,
+  StatsReadModel,
   TodoList,
   TodoListCommandHandler,
   TodoListId,
   TodoListProjector,
   TodoListQueryHandler,
-  TodoListReadModelRepository
+  TodoListReadModel
 } from ".";
 
 export interface TodoAppOptions {
@@ -31,7 +34,8 @@ export class TodoApp {
 
   private _queryBus: QueryBus;
   private _todoListQueryHandler: TodoListQueryHandler;
-  private _todoListRepository: TodoListReadModelRepository;
+  private _todoListRepository: Repository<TodoListReadModel>;
+  private _statsRepository: Repository<StatsReadModel>;
 
   private _eventBus: DomainEventBus;
 
@@ -43,11 +47,13 @@ export class TodoApp {
 
   constructor(
     eventStore: EventStore<Identity>,
-    todoListRepository: TodoListReadModelRepository,
+    todoListRepository: Repository<TodoListReadModel>,
+    statsRepository: Repository<StatsReadModel>,
     options?: TodoAppOptions
   ) {
     this._eventStore = eventStore;
     this._todoListRepository = todoListRepository;
+    this._statsRepository = statsRepository;
 
     if (options && options.commandBus) {
       this._commandBus = options.commandBus;
@@ -87,6 +93,7 @@ export class TodoApp {
     this._queryBus.subscribe(this._todoListQueryHandler);
 
     this._eventBus.subscribe(new TodoListProjector(this._todoListRepository));
+    this._eventBus.subscribe(new StatsProjector(this._statsRepository));
   }
 
   public getCommandBus(): CommandBus {
@@ -112,7 +119,11 @@ export class TodoApp {
     return this._todoListEventSourcingRepository;
   }
 
-  public getTodoListRepository(): TodoListReadModelRepository {
+  public getTodoListRepository(): Repository<TodoListReadModel> {
     return this._todoListRepository;
+  }
+
+  public getStatsRepository(): Repository<StatsReadModel> {
+    return this._statsRepository;
   }
 }

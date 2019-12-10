@@ -336,9 +336,15 @@ export class ConsoleClient extends Vorpal {
   };
 
   private dumpRepositoryAction: Vorpal.Action = async (_args: Vorpal.Args) => {
+    this.log("TodoListReadModel repository :");
     const lists = await this._todoApp.getTodoListRepository().findAll();
     lists.forEach(l => {
       this.log(JSON.stringify(l));
+    });
+    this.log("Stats repository :");
+    const stats = await this._todoApp.getStatsRepository().findAll();
+    stats.forEach(s => {
+      this.log(JSON.stringify(s));
     });
   };
 

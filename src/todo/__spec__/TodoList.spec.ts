@@ -10,6 +10,9 @@ import {
   GetAllTodoLists,
   MarkItemDone,
   RenameTodoList,
+  STATS_GLOBAL_ID,
+  StatsProjector,
+  StatsReadModel,
   TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
@@ -402,6 +405,42 @@ describe("TodoList", () => {
           new TodoItemAdded(idItem1.toString(), "Item 1"),
           new TodoItemAdded(idItem2.toString(), "Item 2"),
           new TodoItemAbandonned(idItem1.toString())
+        ])
+        .thenModelsShouldMatch([expectedModel]);
+    });
+  });
+
+  describe("Projecting stats", () => {
+    it("projects creation", async () => {
+      const [listId1, listId2, listId3] = [
+        TodoItemId.create(),
+        TodoItemId.create(),
+        TodoItemId.create()
+      ];
+
+      const statsId = STATS_GLOBAL_ID;
+      const expectedModel = new StatsReadModel(statsId);
+      expectedModel.incrementNumberOfListsCreated();
+      expectedModel.incrementNumberOfListsCreated();
+      expectedModel.incrementNumberOfListsCreated();
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new StatsProjector(
+            testBench.getReadModelRepository(StatsReadModel)
+          );
+        })
+        .whenEventsHappened(listId1, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List name 1")
+        ])
+        .whenEventsHappened(listId2, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List name 2")
+        ])
+        .whenEventsHappened(listId3, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List name 3")
         ])
         .thenModelsShouldMatch([expectedModel]);
     });

@@ -28,7 +28,8 @@ const logger = winston.createLogger({
 
 const app = new TodoApp(
   FileEventStore.fromFile("./data/event-store", todoAppSerializer),
-  new FileRepository("./data/readmodel-store", todoAppSerializer),
+  new FileRepository("./data/todolist-store", todoAppSerializer),
+  new FileRepository("./data/stats-store", todoAppSerializer),
   {
     commandBus: new LoggingCommandBusDecorator(new SimpleCommandBus(), logger),
     eventBus: new LoggingEventBus(new AsynchronousDomainEventBus(), logger),

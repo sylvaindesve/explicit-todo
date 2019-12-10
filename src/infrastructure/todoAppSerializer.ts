@@ -1,6 +1,8 @@
 import { createClassHandlers } from "ts-eventsourcing/Serializer/transit-js/createClassHandlers";
 import { TransitJSSerializer } from "ts-eventsourcing/Serializer/transit-js/TransitJSSerializer";
 import {
+  StatsReadModel,
+  StatsReadModelId,
   TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
@@ -34,7 +36,19 @@ const todoItemIdSerializerInterface = {
   }
 };
 
+const statsReadModelIdSerializerInterface = {
+  class: StatsReadModelId,
+  read: (data: any): any => {
+    return new StatsReadModelId(data.id);
+  },
+  tag: "StatsReadModelId",
+  write: (instance: any): any => {
+    return { id: instance.id };
+  }
+};
+
 const classHandlers: any[] = createClassHandlers({
+  StatsReadModel,
   TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
@@ -47,7 +61,9 @@ const classHandlers: any[] = createClassHandlers({
 
 export const todoAppSerializer = new TransitJSSerializer(
   [],
-  [todoListIdSerializerInterface, todoItemIdSerializerInterface].concat(
-    classHandlers
-  )
+  [
+    todoListIdSerializerInterface,
+    todoItemIdSerializerInterface,
+    statsReadModelIdSerializerInterface
+  ].concat(classHandlers)
 );

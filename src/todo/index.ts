@@ -38,8 +38,10 @@ export { AbandonItem } from "./command/AbandonItem";
 export { TodoListCommandHandler } from "./command/TodoListCommandHandler";
 
 export { TodoListReadModel } from "./read/TodoListReadModel";
-export { TodoListReadModelRepository } from "./read/TodoListReadModelRepository";
 export { TodoListProjector } from "./read/TodoListProjector";
+export { StatsReadModelId } from "./read/StatsReadModelId";
+export { STATS_GLOBAL_ID, StatsReadModel } from "./read/StatsReadModel";
+export { StatsProjector } from "./read/StatsProjector";
 
 export { GetAllTodoLists } from "./query/GetAllTodoLists";
 export { TodoListQueryHandler } from "./query/TodoListQueryHandler";
