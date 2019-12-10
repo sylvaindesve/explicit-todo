@@ -44,4 +44,5 @@ export { STATS_GLOBAL_ID, StatsReadModel } from "./read/StatsReadModel";
 export { StatsProjector } from "./read/StatsProjector";
 
 export { GetAllTodoLists } from "./query/GetAllTodoLists";
+export { GetTodoList } from "./query/GetTodoList";
 export { TodoListQueryHandler } from "./query/TodoListQueryHandler";

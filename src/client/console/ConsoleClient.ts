@@ -10,6 +10,7 @@ import {
   ArchiveTodoList,
   CreateTodoList,
   GetAllTodoLists,
+  GetTodoList,
   MarkItemDone,
   Notification,
   RenameTodoList,
@@ -220,13 +221,12 @@ export class ConsoleClient extends Vorpal {
 
   private showTodoItemsAction: Vorpal.Action = async (_args: Vorpal.Args) => {
     if (this._currentListId) {
-      const lists$ = (await this._todoApp
+      const listQueryResult = (await this._todoApp
         .getQueryBus()
-        .dispatch(new GetAllTodoLists())) as Observable<TodoListReadModel>;
-      const lists = await lists$.pipe(toArray()).toPromise();
-      const currentList = lists.find(
-        l => l.id.toString() === this._currentListId
-      );
+        .dispatch(
+          new GetTodoList(this._currentListId)
+        )) as Promise<TodoListReadModel | null>;
+      const currentList = await listQueryResult;
       if (currentList) {
         currentList.items.forEach(item => {
           this.log(`> ${item.description}${item.done ? " 👍" : ""}`);

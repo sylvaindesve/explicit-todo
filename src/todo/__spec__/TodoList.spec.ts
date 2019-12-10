@@ -8,6 +8,7 @@ import {
   ArchiveTodoList,
   CreateTodoList,
   GetAllTodoLists,
+  GetTodoList,
   MarkItemDone,
   RenameTodoList,
   STATS_GLOBAL_ID,
@@ -473,6 +474,40 @@ describe("TodoList", () => {
           );
           const models = await result$.pipe(toArray()).toPromise();
           expect(models[0]).toEqual(expectedModel);
+        });
+    });
+
+    it("can get a single list", async () => {
+      const [id1, id2] = [TodoListId.create(), TodoListId.create()];
+      const expectedModel = new TodoListReadModel(id2);
+      expectedModel.name = "List 2";
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .givenQueryHandler(testBench => {
+          return new TodoListQueryHandler(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id1, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List 1")
+        ])
+
+        .whenEventsHappened(id2, [
+          new TodoListCreated(),
+          new TodoListNameChanged("List 2")
+        ])
+        .thenAssert(async (testBench: EventSourcingTestBench) => {
+          const result: Promise<TodoListReadModel | null> = await testBench.queryBus.dispatch(
+            new GetTodoList(id2.toString())
+          );
+          const model = await result;
+          expect(model).toEqual(expectedModel);
         });
     });
   });
