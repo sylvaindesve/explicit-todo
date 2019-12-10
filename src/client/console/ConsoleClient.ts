@@ -5,6 +5,7 @@ import { map } from "rxjs/operators";
 import { ReplayService } from "ts-eventsourcing/ReplayService";
 import Vorpal = require("vorpal");
 import {
+  AbandonItem,
   AddItemToTodoList,
   ArchiveTodoList,
   CreateTodoList,
@@ -110,6 +111,10 @@ export class ConsoleClient extends Vorpal {
         "check <item>",
         "Mark the item as done"
       ).action(this.markTodoItemDoneAction);
+      this._contextualCommands.markItemDone = this.command(
+        "abandon <item>",
+        "Abandon the item"
+      ).action(this.abandonTodoItemDoneAction);
     } else {
       this.log(`Error: unknown list ${args.name}`);
     }
@@ -272,6 +277,39 @@ export class ConsoleClient extends Vorpal {
             );
           if (!not.hasErrors()) {
             this.log(`Item marked as done`);
+          } else {
+            this.log(
+              `Got errors: ${Array.from(not.getErrors().values()).join(", ")}`
+            );
+          }
+        } else {
+          this.log(`Error: no such item "${args.item}"`);
+        }
+      }
+    }
+  };
+
+  private abandonTodoItemDoneAction: Vorpal.Action = async (
+    args: Vorpal.Args
+  ) => {
+    if (this._currentListId) {
+      const lists$ = (await this._todoApp
+        .getQueryBus()
+        .dispatch(new GetAllTodoLists())) as Observable<TodoListReadModel>;
+      const lists = await lists$.pipe(toArray()).toPromise();
+      const currentList = lists.find(
+        l => l.id.toString() === this._currentListId
+      );
+      if (currentList) {
+        const itemToAbandon = currentList.items.find(
+          item => item.description === args.item
+        );
+        if (itemToAbandon) {
+          const not: Notification = await this._todoApp
+            .getCommandBus()
+            .dispatch(new AbandonItem(this._currentListId, itemToAbandon.id));
+          if (!not.hasErrors()) {
+            this.log(`Item abandonned`);
           } else {
             this.log(
               `Got errors: ${Array.from(not.getErrors().values()).join(", ")}`

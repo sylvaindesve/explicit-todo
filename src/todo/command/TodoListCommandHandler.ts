@@ -2,6 +2,7 @@ import { CommandHandler } from "ts-eventsourcing/CommandHandling/CommandHandler"
 import { HandleCommand } from "ts-eventsourcing/CommandHandling/HandleCommand";
 import { EventSourcingRepositoryInterface } from "ts-eventsourcing/EventSourcing/EventSourcingRepositoryInterface";
 import {
+  AbandonItem,
   AddItemToTodoList,
   ArchiveTodoList,
   CreateTodoList,
@@ -124,6 +125,25 @@ export class TodoListCommandHandler implements CommandHandler {
     if (id && itemId && !not.hasErrors()) {
       const todoList = await this._repository.load(id);
       todoList.markItemDone(itemId);
+      await this._repository.save(todoList);
+    }
+
+    return not;
+  }
+
+  @HandleCommand
+  public async handleAbandonItem(command: AbandonItem) {
+    const not = new Notification();
+    const id = this.validateTodoListId(command.id, not);
+    const itemId = this.validateTodoItemId(command.itemId, not);
+
+    if (id) {
+      this.validateTodoListExists(id, not);
+    }
+
+    if (id && itemId && !not.hasErrors()) {
+      const todoList = await this._repository.load(id);
+      todoList.abandonItem(itemId);
       await this._repository.save(todoList);
     }
 

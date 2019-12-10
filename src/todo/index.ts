@@ -11,6 +11,7 @@ export { TodoListNameChanged } from "./domain/event/TodoListNameChanged";
 export { TodoListArchived } from "./domain/event/TodoListArchived";
 export { TodoItemAdded } from "./domain/event/TodoItemAdded";
 export { TodoItemDone } from "./domain/event/TodoItemDone";
+export { TodoItemAbandonned } from "./domain/event/TodoItemAbandonned";
 
 export { TodoListId } from "./domain/TodoListId";
 export { TodoListName } from "./domain/TodoListName";
@@ -33,6 +34,7 @@ export { RenameTodoList } from "./command/RenameTodoList";
 export { ArchiveTodoList } from "./command/ArchiveTodoList";
 export { AddItemToTodoList } from "./command/AddItemToTodoList";
 export { MarkItemDone } from "./command/MarkItemDone";
+export { AbandonItem } from "./command/AbandonItem";
 export { TodoListCommandHandler } from "./command/TodoListCommandHandler";
 
 export { TodoListReadModel } from "./read/TodoListReadModel";

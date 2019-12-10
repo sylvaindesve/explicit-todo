@@ -3,6 +3,7 @@ import { HandleDomainEvent } from "ts-eventsourcing/EventHandling/HandleDomainEv
 import { Projector } from "ts-eventsourcing/ReadModel/Projector";
 import { Repository } from "ts-eventsourcing/ReadModel/Repository";
 import {
+  TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
   TodoListArchived,
@@ -63,6 +64,19 @@ export class TodoListProjector implements Projector {
   ) {
     const model = await this.repository.get(message.aggregateId);
     model.items.find(item => item.id === _event.idItem)!.done = true;
+    await this.repository.save(model);
+  }
+
+  @HandleDomainEvent
+  public async todoItemAbandonned(
+    _event: TodoItemAbandonned,
+    message: DomainMessage<TodoItemDone, TodoListId>
+  ) {
+    const model = await this.repository.get(message.aggregateId);
+    const itemIndex = model.items.findIndex(item => item.id === _event.idItem);
+    if (itemIndex > -1) {
+      model.items.splice(itemIndex, 1);
+    }
     await this.repository.save(model);
   }
 }

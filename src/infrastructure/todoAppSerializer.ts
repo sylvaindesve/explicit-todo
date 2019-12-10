@@ -1,6 +1,7 @@
 import { createClassHandlers } from "ts-eventsourcing/Serializer/transit-js/createClassHandlers";
 import { TransitJSSerializer } from "ts-eventsourcing/Serializer/transit-js/TransitJSSerializer";
 import {
+  TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
   TodoItemId,
@@ -34,6 +35,7 @@ const todoItemIdSerializerInterface = {
 };
 
 const classHandlers: any[] = createClassHandlers({
+  TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
   TodoItemId,

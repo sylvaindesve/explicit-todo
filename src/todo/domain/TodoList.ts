@@ -4,6 +4,7 @@ import { EventSourcedEntity } from "ts-eventsourcing/EventSourcing/EventSourcedE
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 import {
   TodoItem,
+  TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDescription,
   TodoItemDone,
@@ -44,6 +45,10 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
     this.apply(new TodoItemDone(idItem.toString()));
   }
 
+  public abandonItem(idItem: TodoItemId) {
+    this.apply(new TodoItemAbandonned(idItem.toString()));
+  }
+
   public getItems(): TodoItem[] {
     return this._items;
   }
@@ -74,6 +79,16 @@ export class TodoList extends EventSourcedAggregateRoot<TodoListId> {
         new TodoItemDescription(event.description)
       )
     );
+  }
+
+  @AggregateHandleEvent
+  protected applyTodoItemAbandonned(event: TodoItemAbandonned) {
+    const itemIndex = this._items.findIndex(
+      item => item.getId().toString() === event.idItem
+    );
+    if (itemIndex > -1) {
+      this._items.splice(itemIndex, 1);
+    }
   }
 
   @AggregateHandleEvent

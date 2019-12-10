@@ -23,6 +23,10 @@ export class TodoItem extends EventSourcedEntity<TodoList> {
     this._description = description;
   }
 
+  public getId(): TodoItemId {
+    return this._id;
+  }
+
   public getStatus(): TodoItemStatus {
     return this._status;
   }

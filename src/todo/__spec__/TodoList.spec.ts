@@ -3,12 +3,14 @@ import { toArray } from "rxjs/operators";
 import { EventSourcingTestBench } from "ts-eventsourcing/Testing/EventSourcingTestBench";
 import { UuidIdentity } from "ts-eventsourcing/ValueObject/UuidIdentity";
 import {
+  AbandonItem,
   AddItemToTodoList,
   ArchiveTodoList,
   CreateTodoList,
   GetAllTodoLists,
   MarkItemDone,
   RenameTodoList,
+  TodoItemAbandonned,
   TodoItemAdded,
   TodoItemDone,
   TodoItemId,
@@ -271,6 +273,34 @@ describe("TodoList", () => {
     });
   });
 
+  describe("Abandonning items", () => {
+    it("can have an item abandonned", async () => {
+      const id = TodoListId.create();
+      const idItem1 = TodoItemId.create();
+      const idItem2 = TodoItemId.create();
+      await EventSourcingTestBench.create()
+        .givenCommandHandler((testBench: EventSourcingTestBench) => {
+          return new TodoListCommandHandler(
+            testBench.getAggregateRepository(TodoList)
+          );
+        })
+        .givenEvents(id, TodoList, [
+          new TodoListCreated(),
+          new TodoListNameChanged("New todo list"),
+          new TodoItemAdded(idItem1.toString(), "Item 1"),
+          new TodoItemAdded(idItem2.toString(), "Item 2")
+        ])
+        .whenCommands([new AbandonItem(id.toString(), idItem1.toString())])
+        .thenMatchEvents([new TodoItemAbandonned(idItem1.toString())])
+        .thenAssert(async testBench => {
+          const repo = testBench.getAggregateRepository(TodoList);
+          const list: TodoList = await repo.load(id);
+          expect(list.getItems().length).toEqual(1);
+          expect(list.getItems()[0].getId()).toEqual(idItem2);
+        });
+    });
+  });
+
   describe("Projecting TodoListReadModel", () => {
     it("projects creation", async () => {
       const id = TodoListId.create();
@@ -346,6 +376,32 @@ describe("TodoList", () => {
           new TodoListCreated(),
           new TodoItemAdded(idItem.toString(), "Item"),
           new TodoItemDone(idItem.toString())
+        ])
+        .thenModelsShouldMatch([expectedModel]);
+    });
+
+    it("projects items abandonned", async () => {
+      const id = TodoListId.create();
+      const idItem1 = TodoItemId.create();
+      const idItem2 = TodoItemId.create();
+      const expectedModel = new TodoListReadModel(id);
+      expectedModel.items.push({
+        description: "Item 2",
+        done: false,
+        id: idItem2.toString()
+      });
+
+      await EventSourcingTestBench.create()
+        .givenEventListener(testBench => {
+          return new TodoListProjector(
+            testBench.getReadModelRepository(TodoListReadModel)
+          );
+        })
+        .whenEventsHappened(id, [
+          new TodoListCreated(),
+          new TodoItemAdded(idItem1.toString(), "Item 1"),
+          new TodoItemAdded(idItem2.toString(), "Item 2"),
+          new TodoItemAbandonned(idItem1.toString())
         ])
         .thenModelsShouldMatch([expectedModel]);
     });
