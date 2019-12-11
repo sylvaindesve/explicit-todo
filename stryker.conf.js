@@ -7,7 +7,7 @@ module.exports = function(config) {
     transpilers: [],
     coverageAnalysis: "off",
     tsconfigFile: "tsconfig.json",
-    mutate: ["src/**/*.ts", "!src/**/*.spec.ts"],
+    mutate: ["src/todo/**/*.ts", "src/utils/**/*.ts", "!src/**/*.spec.ts"],
     jest: {
       projectType: "custom",
       config: require(__dirname + "/jest.stryker.config.js")
