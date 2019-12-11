@@ -1,7 +1,9 @@
+.stryker-tmp/
 backup
 coverage
 data
 dist
 node_modules
+reports
 test-report.html
 tmp

@@ -3,7 +3,12 @@ module.exports = {
   collectCoverage: false,
   testEnvironment: "node",
   coverageDirectory: "coverage",
-  collectCoverageFrom: ["src/**/*.{ts}", "!**/*.spec.{ts}"],
+  collectCoverageFrom: [
+    "src/**/*.{ts}",
+    "!**/*.spec.{ts}",
+    "!src/client/**/*.{ts}",
+    "!src/infrastructure/**/*.{ts}"
+  ],
   coverageReporters: ["json-summary", "text", "lcov"],
   coverageThreshold: {
     global: {
