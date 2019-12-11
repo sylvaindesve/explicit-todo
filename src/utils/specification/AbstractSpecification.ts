@@ -13,12 +13,12 @@ export abstract class AbstractSpecification<Target>
 
   public abstract satisfiedBy(target: Target): boolean;
 
-  public and(spec: Specification<Target>): Specification<Target> {
-    return new ConjunctionSpecification(this, spec);
+  public and(...specs: Array<Specification<Target>>): Specification<Target> {
+    return new ConjunctionSpecification(this, ...specs);
   }
 
-  public or(spec: Specification<Target>): Specification<Target> {
-    return new DisjunctionSpecification(this, spec);
+  public or(...specs: Array<Specification<Target>>): Specification<Target> {
+    return new DisjunctionSpecification(this, ...specs);
   }
 
   public negate(): Specification<Target> {
