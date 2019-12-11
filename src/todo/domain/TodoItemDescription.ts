@@ -3,8 +3,8 @@ import { ValueObject } from "..";
 export class TodoItemDescription implements ValueObject<TodoItemDescription> {
   private _description: string;
 
-  constructor(name: string) {
-    this._description = name;
+  constructor(description: string) {
+    this._description = description;
   }
 
   public getDescription(): string {
@@ -12,7 +12,7 @@ export class TodoItemDescription implements ValueObject<TodoItemDescription> {
   }
 
   public toString() {
-    return `TodoItemDescription[name=${this._description}]`;
+    return `TodoItemDescription[description=${this._description}]`;
   }
 
   public sameAs(other: TodoItemDescription) {
