@@ -30,8 +30,8 @@ import {
   TodoListReadModel
 } from "..";
 
-describe("TodoList", () => {
-  describe("Creation", () => {
+describe("Todo domain", () => {
+  describe("TodoList creation", () => {
     it("can be created", async () => {
       const id = TodoListId.create();
       await EventSourcingTestBench.create()
@@ -72,7 +72,7 @@ describe("TodoList", () => {
     });
   });
 
-  describe("Renaming", () => {
+  describe("TodoList renaming", () => {
     it("can be renamed", async () => {
       const id = TodoListId.create();
       await EventSourcingTestBench.create()
@@ -122,7 +122,7 @@ describe("TodoList", () => {
     });
   });
 
-  describe("Archiving", () => {
+  describe("TodoList archiving", () => {
     it("can be archived if empty", async () => {
       const id = TodoListId.create();
       await EventSourcingTestBench.create()
@@ -180,7 +180,7 @@ describe("TodoList", () => {
     });
   });
 
-  describe("Adding items", () => {
+  describe("Adding items to TodoList", () => {
     it("new items can be added to it", async () => {
       const id = TodoListId.create();
       const idItem1 = UuidIdentity.create();
@@ -248,7 +248,7 @@ describe("TodoList", () => {
     });
   });
 
-  describe("Marking items as done", () => {
+  describe("Marking items as donein a TodoList", () => {
     it("can have an item marked as done", async () => {
       const id = TodoListId.create();
       const idItem1 = UuidIdentity.create();
@@ -277,7 +277,7 @@ describe("TodoList", () => {
     });
   });
 
-  describe("Abandonning items", () => {
+  describe("Abandonning items in a TodoList", () => {
     it("can have an item abandonned", async () => {
       const id = TodoListId.create();
       const idItem1 = TodoItemId.create();
