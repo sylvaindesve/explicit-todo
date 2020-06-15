@@ -1,5 +1,6 @@
 {
   "eventStore": "db",
   "todoStore": "db",
-  "statsStore": "file"
+  "statsStore": "file",
+  "client": "graphql"
 }

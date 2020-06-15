@@ -10,6 +10,7 @@ import { Identity } from "ts-eventsourcing/ValueObject/Identity";
 import { createConnection } from "typeorm";
 import { promisify } from "util";
 import * as winston from "winston";
+import { TodoAppGraphQLServer } from "./application/graphql";
 import { ConsoleClient } from "./client/console/ConsoleClient";
 import { FileRepository } from "./infrastructure/FileRepository";
 import { LoggingCommandBusDecorator } from "./infrastructure/LoggingCommandBusDecorator";
@@ -97,7 +98,18 @@ const readFile = promisify(fs.readFile);
     logger.info("Stopped.");
   });
 
-  const client = new ConsoleClient(app);
-  logger.info("Starting...");
-  client.show();
+  if (config.client === "graphql") {
+    logger.info("Using GraphQL server");
+    logger.add(
+      new winston.transports.Console({
+        format: winston.format.simple()
+      })
+    );
+    const server = new TodoAppGraphQLServer(app, logger);
+    server.start();
+  } else {
+    logger.info("Using console application");
+    const client = new ConsoleClient(app);
+    client.show();
+  }
 })();

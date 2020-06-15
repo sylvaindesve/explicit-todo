@@ -1,0 +1,25 @@
+type TodoItem {
+  id: String!
+  description: String
+  done: Boolean!
+}
+
+type TodoList {
+  id: String!
+  name: String
+  items: [TodoItem!]!
+}
+
+type Query {
+  todoLists: [TodoList!]!
+  todoList(id: String!): TodoList
+}
+
+type Mutation {
+  createTodoList(name: String!): TodoList
+  renameTodoList(id: String!, newName: String!): TodoList
+  archiveTodoList(id: String!): Boolean!
+  addItemToTodoList(id: String!, description: String!): TodoList
+  markItemDone(id: String!, itemId: String!): TodoList
+  abandonItem(id: String!, itemId: String!): TodoList
+}
