@@ -1,0 +1,11 @@
+{
+  "type": "mariadb",
+  "host": "127.0.0.1",
+  "port": 3306,
+  "username": "explicittodo",
+  "password": "explicittodo",
+  "database": "explicittodo",
+  "synchronize": true,
+  "logging": false,
+  "entities": ["./src/infrastructure/typeorm/*Entity.ts"]
+}

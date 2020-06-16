@@ -1,0 +1,5 @@
+{
+  "eventStore": "db",
+  "todoStore": "db",
+  "statsStore": "file"
+}
