@@ -17,7 +17,8 @@ export class TodoItemEntity {
 
   @ManyToOne(
     () => TodoListEntity,
-    list => list.items
+    list => list.items,
+    { onDelete: "CASCADE" }
   )
   public list: TodoListEntity;
 }
